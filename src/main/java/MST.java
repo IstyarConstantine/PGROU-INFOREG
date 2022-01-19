@@ -107,3 +107,6 @@ class MST {
     }
 }
 // This code is contributed by Aakash Hasija
+
+//Fonctionnel avec tous types de graphes non orienté à priori
+//À remanier pour avoir des graphes de toutes tailles

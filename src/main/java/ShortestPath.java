@@ -94,3 +94,9 @@ class ShortestPath {
     }
 }
 // This code is contributed by Aakash Hasija
+
+//Fonctionnel, ne permet pas de remonter la liste des prédécesseurs
+//(il suffit de créer la liste des prédecesseurs d'un sommet dans le plus
+//court chemin et de la mettre à jour juste après la ligne 72, le
+//prédesseur de v étant u à cet instant là).
+//Modifier le code pour ne pas le limiter aux graphes contenant 9 branches.
