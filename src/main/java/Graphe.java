@@ -85,29 +85,19 @@ public abstract class Graphe {
 
     public void retourEnArriere(){
         if (modif.empty()){
-            System.out.println("Impossible de revenir en arriere")
+            System.out.println("Impossible de revenir en arriere");
         } else {
             String inst = modif.pop();
             switch (inst){
-                case "SuppSommet":
-                    this.addSommet();
-                    break;
-                case "AddSommet":
-                    this.suppSommet();
-                    break;
-                case "SuppArc":
-                    this.addArc(lstArc.pop());
-                    break;
-                case "AddArc":
-                    this.suppArc(lstArc.pop());
-                    break;
-                case "ModifArc":
+                case "SuppSommet" -> this.addSommet();
+                case "AddSommet" -> this.suppSommet();
+                case "SuppArc" -> this.addArc(lstArc.pop());
+                case "AddArc" -> this.suppArc(lstArc.pop());
+                case "ModifArc" -> {
                     Arc nouv = lstArc.pop();
                     this.modifArc(nouv, lstArc.pop().getPoids());
-                    break;
-                default:
-                    System.out.println("Action inconnue");
-                    break;
+                }
+                default -> System.out.println("Action inconnue");
             
             }
         }
