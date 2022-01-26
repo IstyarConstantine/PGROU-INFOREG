@@ -8,6 +8,7 @@ public abstract class Graphe {
     protected Stack<String> modif;
     protected Stack<Arc> lstArc;
 
+    @SuppressWarnings("Convert2Diamond")
    public Graphe(){
        this.nbsommets = 0;
        this.adj = new int[nbmax][nbmax];
@@ -70,11 +71,7 @@ public abstract class Graphe {
     }
 
     public boolean estPresent(Arc a){
-        if ((a.getSrc() < this.nbsommets) && (a.getDest() < this.nbsommets) && (this.adj[a.getSrc()][a.getDest()] == a.getPoids())){
-            return true;
-        } else {
-            return false;
-        }
+        return (a.getSrc() < this.nbsommets) && (a.getDest() < this.nbsommets) && (this.adj[a.getSrc()][a.getDest()] == a.getPoids());
     }
 
     public abstract void addArc(Arc a);
