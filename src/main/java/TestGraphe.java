@@ -11,6 +11,20 @@ public class TestGraphe {
         g.addArc(6,1,6);
         g.addArc(1,2,1);
         g.afficher();
+        System.out.println("\n");
+        d.addSommet();
+        g.afficher();
+        System.out.println("\n");
         d.afficher();
+        System.out.println("\n");
+        g.retourEnArriere();
+        g.afficher();
+        System.out.println("\n");
+        d.afficher();
+        System.out.println("\n");
+        d.retourEnArriere();
+        d.afficher();
+        System.out.println("\n");
+        g.afficher();
     }
 }
