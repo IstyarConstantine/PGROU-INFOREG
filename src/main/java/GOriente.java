@@ -33,9 +33,9 @@ public class GOriente extends Graphe {
     @Override
     public void addArc(Arc a){
         int s = a.getSrc();
-        int d = a.getSrc();
+        int d = a.getDest();
         if ((s<this.nbsommets) && (d<this.nbsommets)){
-            if (this.adj[s][d] != 0){
+            if (this.adj[s][d] == 0){
                 this.modif.push(this.copie());
                 this.adj[s][d] = a.getPoids();
             } else {

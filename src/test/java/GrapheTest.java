@@ -34,8 +34,8 @@ public class GrapheTest {
     public void testGetModif() {
         System.out.println("getModif");
         Graphe instance = new GrapheImpl();
-        Stack<String> expResult = null;
-        Stack<String> result = instance.getModif();
+        Stack<Graphe> expResult = null;
+        Stack<Graphe> result = instance.getModif();
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
@@ -47,7 +47,7 @@ public class GrapheTest {
     @Test
     public void testSetModif() {
         System.out.println("setModif");
-        Stack<String> modif = null;
+        Stack<Graphe> modif = null;
         Graphe instance = new GrapheImpl();
         instance.setModif(modif);
         // TODO review the generated test code and remove the default call to fail.
@@ -109,28 +109,27 @@ public class GrapheTest {
     }
 
     /**
-     * Test of getLstArc method, of class Graphe.
+     * Test of afficher method, of class Graphe.
      */
     @Test
-    public void testGetLstArc() {
-        System.out.println("getLstArc");
+    public void testAfficher() {
+        System.out.println("afficher");
         Graphe instance = new GrapheImpl();
-        Stack<Arc> expResult = null;
-        Stack<Arc> result = instance.getLstArc();
-        assertEquals(expResult, result);
+        instance.afficher();
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
 
     /**
-     * Test of setLstArc method, of class Graphe.
+     * Test of copie method, of class Graphe.
      */
     @Test
-    public void testSetLstArc() {
-        System.out.println("setLstArc");
-        Stack<Arc> lstArc = null;
+    public void testCopie() {
+        System.out.println("copie");
         Graphe instance = new GrapheImpl();
-        instance.setLstArc(lstArc);
+        Graphe expResult = null;
+        Graphe result = instance.copie();
+        assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
@@ -178,7 +177,7 @@ public class GrapheTest {
      * Test of addArc method, of class Graphe.
      */
     @Test
-    public void testAddArc() {
+    public void testAddArc_Arc() {
         System.out.println("addArc");
         Arc a = null;
         Graphe instance = new GrapheImpl();
@@ -188,10 +187,25 @@ public class GrapheTest {
     }
 
     /**
+     * Test of addArc method, of class Graphe.
+     */
+    @Test
+    public void testAddArc_3args() {
+        System.out.println("addArc");
+        int s = 0;
+        int d = 0;
+        int p = 0;
+        Graphe instance = new GrapheImpl();
+        instance.addArc(s, d, p);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
      * Test of suppArc method, of class Graphe.
      */
     @Test
-    public void testSuppArc() {
+    public void testSuppArc_Arc() {
         System.out.println("suppArc");
         Arc a = null;
         Graphe instance = new GrapheImpl();
@@ -201,15 +215,46 @@ public class GrapheTest {
     }
 
     /**
+     * Test of suppArc method, of class Graphe.
+     */
+    @Test
+    public void testSuppArc_3args() {
+        System.out.println("suppArc");
+        int s = 0;
+        int d = 0;
+        int p = 0;
+        Graphe instance = new GrapheImpl();
+        instance.suppArc(s, d, p);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
      * Test of modifArc method, of class Graphe.
      */
     @Test
-    public void testModifArc() {
+    public void testModifArc_Arc_int() {
         System.out.println("modifArc");
         Arc a = null;
         int p = 0;
         Graphe instance = new GrapheImpl();
         instance.modifArc(a, p);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+
+    /**
+     * Test of modifArc method, of class Graphe.
+     */
+    @Test
+    public void testModifArc_4args() {
+        System.out.println("modifArc");
+        int s = 0;
+        int d = 0;
+        int p1 = 0;
+        int p2 = 0;
+        Graphe instance = new GrapheImpl();
+        instance.modifArc(s, d, p1, p2);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
@@ -227,6 +272,10 @@ public class GrapheTest {
     }
 
     public class GrapheImpl extends Graphe {
+
+        public Graphe copie() {
+            return null;
+        }
 
         public void addArc(Arc a) {
         }

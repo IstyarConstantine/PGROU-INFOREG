@@ -33,10 +33,10 @@ public class GNonOriente extends Graphe {
     @Override
     public void addArc(Arc a) {
         int s = a.getSrc();
-        int d = a.getSrc();
+        int d = a.getDest();
         int p = a.getPoids();
         if ((s<this.nbsommets) && (d<this.nbsommets)){
-            if (this.adj[s][d] != 0){
+            if (this.adj[s][d] == 0){
                 this.modif.push(this.copie());
                 this.adj[s][d] = p;
                 this.adj[d][s] = p;
@@ -68,7 +68,7 @@ public class GNonOriente extends Graphe {
             int s = a.getSrc();
             int d = a.getDest();
             this.adj[s][d] = p;
-            this.adj[s][d] = p;
+            this.adj[d][s] = p;
         } else {
             System.out.println("L'arc à modifier n'est pas dans le graphe");
         }  

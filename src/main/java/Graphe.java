@@ -78,10 +78,25 @@ public abstract class Graphe {
     }
 
     public abstract void addArc(Arc a);
+    
+    public void addArc(int s, int d, int p){
+        Arc a = new Arc(s,d,p);
+        this.addArc(a);
+    }
 
     public abstract void suppArc(Arc a);
+    
+    public void suppArc(int s, int d, int p){
+        Arc a = new Arc(s,d,p);
+        this.suppArc(a);
+    }
 
     public abstract void modifArc(Arc a, int p);
+    
+    public void modifArc(int s, int d, int p1, int p2){
+        Arc a = new Arc(s,d,p1);
+        this.modifArc(a,p2);
+    }
 
     public void retourEnArriere(){
         if (modif.empty()){
