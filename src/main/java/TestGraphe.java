@@ -26,5 +26,10 @@ public class TestGraphe {
         d.afficher();
         System.out.println("\n");
         g.afficher();
+        System.out.println("\n");
+        g.retourEnArriere();
+        g.retourEnArriere();
+        g.retourEnArriere();
+        g.afficher();
     }
 }

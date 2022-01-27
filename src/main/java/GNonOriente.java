@@ -1,5 +1,3 @@
-import java.util.Stack;
-
 public class GNonOriente extends Graphe {
 
     public GNonOriente(){
@@ -16,17 +14,10 @@ public class GNonOriente extends Graphe {
                 mat[i][j] = this.getAdj()[i][j];
             }
         }
-        int count = 0;
-        Stack<Graphe> aux = new Stack<Graphe>();
-        while ((!(this.modif.isEmpty())) && (count<10)){
-            ++count;
-            aux.push(this.modif.pop());
-        }
+        Graphe v = this.getVersion();
         nouv.setAdj(mat);
         nouv.setNbsommets(n);
-        while (!(aux.isEmpty())){
-            nouv.modif.push(aux.pop());
-        }
+        nouv.setVersion(v);
         return nouv;
     }
 
@@ -37,7 +28,7 @@ public class GNonOriente extends Graphe {
         int p = a.getPoids();
         if ((s<this.nbsommets) && (d<this.nbsommets)){
             if (this.adj[s][d] == 0){
-                this.modif.push(this.copie());
+                this.version = this.copie();
                 this.adj[s][d] = p;
                 this.adj[d][s] = p;
             } else {
@@ -51,7 +42,7 @@ public class GNonOriente extends Graphe {
     @Override
     public void suppArc(Arc a) {
         if (this.estPresent(a)){
-            this.modif.push(this.copie());
+            this.version = this.copie();
             int s = a.getSrc();
             int d = a.getDest();
             this.adj[s][d] = 0;
@@ -64,15 +55,14 @@ public class GNonOriente extends Graphe {
     @Override
     public void modifArc(Arc a, int p) {
         if (this.estPresent(a)){
-            this.modif.push(this.copie());
+            this.version = this.copie();
             int s = a.getSrc();
             int d = a.getDest();
             this.adj[s][d] = p;
             this.adj[d][s] = p;
         } else {
             System.out.println("L'arc à modifier n'est pas dans le graphe");
-        }  
-        
+        }      
     }
     
 }

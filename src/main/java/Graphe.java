@@ -1,25 +1,22 @@
-import java.util.Stack;
-
 public abstract class Graphe {
 
     protected final int nbmax = 100;
     protected int nbsommets;
     protected int[][] adj;
-    protected Stack<Graphe> modif;
+    protected Graphe version;
 
     @SuppressWarnings("Convert2Diamond")
    public Graphe(){
        this.nbsommets = 0;
        this.adj = new int[nbmax][nbmax];
-       this.modif = new Stack<Graphe>();
    }
 
-    public Stack<Graphe> getModif() {
-        return modif;
+    public Graphe getVersion(){
+        return version;
     }
 
-    public void setModif(Stack<Graphe> modif) {
-        this.modif = modif;
+    public void setVersion(Graphe version){
+        this.version = version;
     }
 
     public int[][] getAdj() {
@@ -53,7 +50,7 @@ public abstract class Graphe {
 
     public void addSommet(){
         if (this.nbsommets < this.nbmax){
-            modif.push(this.copie());
+            this.version = this.copie();
             for (int i=0;i<=this.nbsommets;i++){
                 this.adj[i][this.nbsommets] = 0;
                 this.adj[this.nbsommets][i] = 0;
@@ -68,7 +65,7 @@ public abstract class Graphe {
         if (this.nbsommets == 0){
             System.out.println("Il n'y a pas de sommet à supprimer");
         } else {
-            modif.push(this.copie());
+            this.version = this.copie();
             --this.nbsommets;
         }
     }
@@ -99,13 +96,13 @@ public abstract class Graphe {
     }
 
     public void retourEnArriere(){
-        if (modif.empty()){
+        if (version == null){
             System.out.println("Impossible de revenir en arriere");
         } else {
-            Graphe prec = modif.pop();
+            Graphe prec = this.getVersion();
             this.adj = prec.getAdj();
             this.nbsommets = prec.getNbsommets();
-            this.modif = prec.getModif();
+            this.version = prec.getVersion();
         }
     }
 
