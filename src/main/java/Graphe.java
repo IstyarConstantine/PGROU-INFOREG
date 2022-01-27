@@ -2,25 +2,23 @@ import java.util.Stack;
 
 public abstract class Graphe {
 
-    private final int nbmax = 100;
+    protected final int nbmax = 100;
     protected int nbsommets;
     protected int[][] adj;
-    protected Stack<String> modif;
-    protected Stack<Arc> lstArc;
+    protected Stack<Graphe> modif;
 
     @SuppressWarnings("Convert2Diamond")
    public Graphe(){
        this.nbsommets = 0;
        this.adj = new int[nbmax][nbmax];
-       this.modif = new Stack<String>();
-       this.lstArc = new Stack<Arc>();
+       this.modif = new Stack<Graphe>();
    }
 
-    public Stack<String> getModif() {
+    public Stack<Graphe> getModif() {
         return modif;
     }
 
-    public void setModif(Stack<String> modif) {
+    public void setModif(Stack<Graphe> modif) {
         this.modif = modif;
     }
 
@@ -40,22 +38,27 @@ public abstract class Graphe {
         this.nbsommets = nbsommets;
     }
 
-    public Stack<Arc> getLstArc() {
-        return lstArc;
-    }
-
-    public void setLstArc(Stack<Arc> lstArc) {
-        this.lstArc = lstArc;
+    public void afficher(){
+        String t;
+        for (int i=0;i<this.nbsommets;i++){
+            t = "|";
+            for (int j=0;j<this.nbsommets;j++){
+                t += this.adj[i][j] + "|";
+            }
+            System.out.println(t);
+        }
     }
     
+    public abstract Graphe copie();
+
     public void addSommet(){
         if (this.nbsommets < this.nbmax){
+            modif.push(this.copie());
             for (int i=0;i<=this.nbsommets;i++){
                 this.adj[i][this.nbsommets] = 0;
                 this.adj[this.nbsommets][i] = 0;
             }
             ++this.nbsommets;
-            modif.push("AddSommet");
         } else {
             System.out.println("Impossible d'ajouter un sommet supplémentaire");
         }
@@ -65,8 +68,8 @@ public abstract class Graphe {
         if (this.nbsommets == 0){
             System.out.println("Il n'y a pas de sommet à supprimer");
         } else {
+            modif.push(this.copie());
             --this.nbsommets;
-            modif.push("SuppSommet");
         }
     }
 
@@ -84,19 +87,10 @@ public abstract class Graphe {
         if (modif.empty()){
             System.out.println("Impossible de revenir en arriere");
         } else {
-            String inst = modif.pop();
-            switch (inst){
-                case "SuppSommet" -> this.addSommet();
-                case "AddSommet" -> this.suppSommet();
-                case "SuppArc" -> this.addArc(lstArc.pop());
-                case "AddArc" -> this.suppArc(lstArc.pop());
-                case "ModifArc" -> {
-                    Arc nouv = lstArc.pop();
-                    this.modifArc(nouv, lstArc.pop().getPoids());
-                }
-                default -> System.out.println("Action inconnue");
-            
-            }
+            Graphe prec = modif.pop();
+            this.adj = prec.getAdj();
+            this.nbsommets = prec.getNbsommets();
+            this.modif = prec.getModif();
         }
     }
 
