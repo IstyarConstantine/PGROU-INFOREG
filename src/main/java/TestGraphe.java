@@ -27,9 +27,6 @@ public class TestGraphe {
         System.out.println("\n");
         g.afficher();
         System.out.println("\n");
-        g.retourEnArriere();
-        g.retourEnArriere();
-        g.retourEnArriere();
-        g.afficher();
+        g.sauvGraph("sauv.txt");
     }
 }

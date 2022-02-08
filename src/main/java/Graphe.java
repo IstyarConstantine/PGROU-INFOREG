@@ -1,3 +1,13 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.StringTokenizer;
+import java.lang.Class;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 /*=============================================
 Classe abstraite Graphe définissant la structure 
 générale d'un graphe
@@ -28,6 +38,13 @@ public abstract class Graphe {
      */
     protected Graphe version;
 
+    /**
+     * Constructeur d'un graphe
+     */
+    public Graphe(){
+        this.nbsommets = 0;
+        this.adj = new int[this.nbmax][this.nbmax];
+    }
     /**
      * Getter du graphe de version précédente
      * @return un graphe
@@ -220,6 +237,33 @@ public abstract class Graphe {
             this.adj = prec.getAdj();
             this.nbsommets = prec.getNbsommets();
             this.version = prec.getVersion();
+        }
+    }
+
+    /**
+     * 
+     * @param sauv 
+     */
+    public void sauvGraph(String sauv){
+        try {
+            try (BufferedWriter fichier = new BufferedWriter(new FileWriter(sauv))) {
+                fichier.write(this.getClass().getSimpleName());
+                fichier.newLine();
+                String ligne = this.nbsommets + "";
+                fichier.write(ligne);
+                fichier.newLine();
+                for (int i=0;i<this.nbsommets;i++){
+                    ligne = "";
+                    for (int j=0;j<this.nbsommets;j++){
+                        ligne += this.adj[i][j] + " ";
+                    }
+                    fichier.write(ligne);
+                    fichier.newLine();
+                }
+                fichier.flush();
+            }
+        } catch (IOException e) {
+            System.out.println("Erreur");
         }
     }
 
