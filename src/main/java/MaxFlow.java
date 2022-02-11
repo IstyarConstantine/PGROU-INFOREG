@@ -6,12 +6,11 @@ import java.util.*;
 import java.util.LinkedList;
 
 class MaxFlow {
-    static final int V = 6; // Number of vertices in graph
 
     /* Returns true if there is a path from source 's' to
       sink 't' in residual graph. Also fills parent[] to
       store the path */
-    boolean bfs(int rGraph[][], int s, int t, int parent[])
+    boolean bfs(int rGraph[][], int s, int t, int parent[], int V)
     {
         // Create a visited array and mark all vertices as
         // not visited
@@ -56,7 +55,7 @@ class MaxFlow {
 
     // Returns tne maximum flow from s to t in the given
     // graph
-    int fordFulkerson(int graph[][], int s, int t)
+    int fordFulkerson(int graph[][], int s, int t, int V)
     {
         int u, v;
 
@@ -81,7 +80,7 @@ class MaxFlow {
 
         // Augment the flow while there is path from source
         // to sink
-        while (bfs(rGraph, s, t, parent)) {
+        while (bfs(rGraph, s, t, parent, V)) {
             // Find minimum residual capacity of the edhes
             // along the path filled by BFS. Or we can say
             // find the maximum flow through the path found.
@@ -106,21 +105,5 @@ class MaxFlow {
 
         // Return the overall flow
         return max_flow;
-    }
-
-    // Driver program to test above functions
-    public static void main(String[] args)
-        throws java.lang.Exception
-    {
-        // Let us create a graph shown in the above example
-        int graph[][] = new int[][] {
-            { 0, 16, 13, 0, 0, 0 }, { 0, 0, 10, 12, 0, 0 },
-            { 0, 4, 0, 0, 14, 0 },  { 0, 0, 9, 0, 0, 20 },
-            { 0, 0, 0, 7, 0, 4 },   { 0, 0, 0, 0, 0, 0 }
-        };
-        MaxFlow m = new MaxFlow();
-
-        System.out.println("The maximum possible flow is "
-                           + m.fordFulkerson(graph, 0, 5));
     }
 }
