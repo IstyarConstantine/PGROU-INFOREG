@@ -57,6 +57,30 @@ public class Arc {
     public int getDest() {
         return dest;
     }
+    
+    /**
+     * Setter du sommet source
+     * @param src
+     */
+    public void setSrc(int src) {
+        this.src = src;
+    }
+
+    /**
+     * Setter du poids de l'Arc
+     * @param poids
+     */
+    public void setPoids(int poids) {
+        this.poids = poids;
+    }
+
+    /**
+     * Setter du sommet de destination de l'Arc
+     * @param dest
+     */
+    public void setDest(int dest) {
+        this.dest = dest;
+    }
 
     /**
      * Méthode permettant de comparer le poids de l'Arc
