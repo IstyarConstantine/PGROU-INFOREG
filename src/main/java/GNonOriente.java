@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /*================================================
 Classe GOriente définissant un Graphe non orienté
 Sous classe de la classe abstraite Graphe
@@ -30,10 +32,14 @@ public class GNonOriente extends Graphe {
                 mat[i][j] = this.getAdj()[i][j];
             }
         }
+        ArrayList<Noeud> N = this.getLstNoeuds();
+        ArrayList<Arc> A = this.getLstArcs();
         Graphe v = this.getVersion();
         nouv.setAdj(mat);
         nouv.setNbsommets(n);
         nouv.setVersion(v);
+        nouv.setLstArcs(A);
+        nouv.setLstNoeuds(N);
         return nouv;
     }
 
