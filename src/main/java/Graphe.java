@@ -1,26 +1,28 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.awt.Color;
 
 /*=============================================
 Classe abstraite Graphe définissant la structure 
 générale d'un graphe
 Auteur : Béryl CASSEL
 Date de création : 27/01/2022
-Date de dernière modification : 02/02/2022
+Date de dernière modification : 28/02/2022
 =============================================*/
 
 public abstract class Graphe {
 
     /**
+     * Nombre de Noeuds du Graphe
+     */
+    protected int nbsommets;
+
+    /**
      * Nombre maximal de sommets que peut contenir un graphe 
      */
     protected final int nbmax = 100;
-
-    /**
-     * Nombre de sommets du graphe considéré
-     */
-    protected int nbsommets;
 
     /**
      * Matrice d'adjacence
@@ -32,13 +34,36 @@ public abstract class Graphe {
      */
     protected Graphe version;
 
+    protected ArrayList<Noeud> lstNoeuds;
+
+    protected ArrayList<Arc> lstArcs;
+
     /**
      * Constructeur d'un graphe
      */
     public Graphe(){
-        this.nbsommets = 0;
         this.adj = new int[this.nbmax][this.nbmax];
+        this.nbsommets = 0;
+        this.lstArcs = new ArrayList<Arc>();
+        this.lstNoeuds = new ArrayList<Noeud>();
     }
+
+    public ArrayList<Noeud> getLstNoeuds() {
+        return lstNoeuds;
+    }
+
+    public void setLstNoeuds(ArrayList<Noeud> lstNoeuds) {
+        this.lstNoeuds = lstNoeuds;
+    }
+
+    public ArrayList<Arc> getLstArcs() {
+        return lstArcs;
+    }
+
+    public void setLstArcs(ArrayList<Arc> lstArcs) {
+        this.lstArcs = lstArcs;
+    }
+    
     /**
      * Getter du graphe de version précédente
      * @return un graphe
@@ -113,7 +138,7 @@ public abstract class Graphe {
      * Modifie aussi la version précédente du graphe 
      * pour pouvoir revenir en arrière
      */
-    public void addSommet(){
+    public void addSommet(int x, int y, Color c, String n){
         if (this.nbsommets < this.nbmax){
             /*Sauvegarde du Graphe actuel*/
             this.version = this.copie();
@@ -122,6 +147,9 @@ public abstract class Graphe {
                 this.adj[i][this.nbsommets] = 0;
                 this.adj[this.nbsommets][i] = 0;
             }
+            Noeud s = new Noeud(x,y,c,n);
+            s.setId(this.nbsommets);
+            this.lstNoeuds.add(s);
             ++this.nbsommets;
         } else {
             System.out.println("Impossible d'ajouter un sommet supplémentaire");
@@ -134,13 +162,40 @@ public abstract class Graphe {
      * Modifie aussi la version précédente du graphe 
      * pour pouvoir revenir en arrière
      */
-    public void suppSommet(){
+    public void suppSommet(int id){
         if (this.nbsommets == 0){
             System.out.println("Il n'y a pas de sommet à supprimer");
         } else {
             /*Sauvegarde du Graphe actuel*/
             this.version = this.copie();
-            /*Suppression du dernier sommet*/
+            /*Suppression du sommet*/
+            ArrayList<Noeud> aux1 = new ArrayList<Noeud>();
+            int[][] aux2 = new int[this.nbmax][this.nbmax];
+            for (int i=0;i<this.nbsommets;i++){
+                if (i<id){
+                    aux1.add(this.lstNoeuds.get(i));
+                    for (int j=0; j<=i;j++){
+                        aux2[i][j]=this.adj[i][j];
+                        aux2[j][i]=this.adj[i][j];
+                    }
+                } else {
+                    if (i>id){
+                        Noeud s = this.lstNoeuds.get(i).deplace();
+                        aux1.add(s);
+                        for (int j=0;j<=i-1;j++){
+                            if (j<id){
+                                aux2[j][i-1]=this.adj[j][i];
+                                aux2[i-1][j]=this.adj[i][j];
+                            } else {
+                                aux2[j][i-1]=this.adj[j+1][i];
+                                aux2[i-1][j]=this.adj[i][j+1];
+                            }
+                        }
+                    }
+                }
+            }
+            this.lstNoeuds = aux1;
+            this.adj = aux2;
             --this.nbsommets;
         }
     }
@@ -171,8 +226,9 @@ public abstract class Graphe {
      * @param d = destination de l'arc à ajouter
      * @param p = poids de l'arc à ajouter
      */
-    public void addArc(int s, int d, int p){
+    public void addArc(int s, int d, int p, Color c){
         Arc a = new Arc(s,d,p);
+        a.setCol(c);
         this.addArc(a);
     }
 
@@ -190,8 +246,9 @@ public abstract class Graphe {
      * @param d = destination de l'arc à supprimer
      * @param p = poids de l'arc à supprimer
      */
-    public void suppArc(int s, int d, int p){
+    public void suppArc(int s, int d, int p, Color c){
         Arc a = new Arc(s,d,p);
+        a.setCol(c);
         this.suppArc(a);
     }
 
@@ -211,8 +268,9 @@ public abstract class Graphe {
      * @param p1 = poids de l'arc à modifier
      * @param p2 = nouveau poids à lui attribuer
      */
-    public void modifArc(int s, int d, int p1, int p2){
+    public void modifArc(int s, int d, int p1, int p2, Color c){
         Arc a = new Arc(s,d,p1);
+        a.setCol(c);
         this.modifArc(a,p2);
     }
 

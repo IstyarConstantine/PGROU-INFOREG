@@ -2,8 +2,10 @@
 Classe Objet Arc définissant un Arc orienté
 Auteur : Béryl CASSEL
 Date de création : 26/01/2022
-Date de dernière modification : 02/02/2022
+Date de dernière modification : 28/02/2022
 =============================================*/
+
+import java.awt.Color;
 
 public class Arc {
 
@@ -23,6 +25,11 @@ public class Arc {
     private int poids;
 
     /**
+     * Couleur de l'arc
+     */
+    private Color col;
+
+    /**
      * Constructeur d'un Arc orienté
      * @param s = sommet source de l'Arc
      * @param d = sommet de destination de l'Arc
@@ -32,6 +39,14 @@ public class Arc {
         this.src = s;
         this.dest = d;
         this.poids = p;
+    }
+
+    public Color getCol() {
+        return col;
+    }
+
+    public void setCol(Color col) {
+        this.col = col;
     }
 
     /**
