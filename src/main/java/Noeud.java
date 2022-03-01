@@ -2,7 +2,7 @@
 Classe Noeud définissant un noeud du graphe
 Auteur : Béryl CASSEL
 Date de création : 27/01/2022
-Date de dernière modification : 28/02/2022
+Date de dernière modification : 01/03/2022
 =============================================*/
 
 import java.awt.Color;
@@ -85,6 +85,10 @@ public class Noeud {
         Noeud n = new Noeud(this.getX(), this.getY(), this.getCol(), this.getNom());
         n.setId(this.getId()-1);
         return n;
+    }
+
+    public String toString(){
+        return this.id + " : [" + this.x +";" + this.y + "]";
     }
     
 }

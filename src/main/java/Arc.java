@@ -2,7 +2,7 @@
 Classe Objet Arc définissant un Arc orienté
 Auteur : Béryl CASSEL
 Date de création : 26/01/2022
-Date de dernière modification : 28/02/2022
+Date de dernière modification : 01/03/2022
 =============================================*/
 
 import java.awt.Color;
@@ -105,6 +105,32 @@ public class Arc {
      */
     public int compareTo(Arc compareEdge){
         return this.poids - compareEdge.poids;
+    }
+
+    public boolean decale(int id){
+        boolean conserve;
+        if ((this.src==id) || (this.dest==id)){
+            conserve = false;
+        } else {
+            conserve = true;
+            if (this.src>id){
+                --this.src;
+            }
+            if (this.dest>id){
+                --this.dest;
+            }
+        }
+        return conserve;
+    }
+
+    public Arc inverse(){
+        Arc a = new Arc(this.dest,this.src,this.poids);
+        a.setCol(this.col);
+        return a;
+    }
+
+    public String toString(){
+        return this.src + " -> " + this.dest + " : " + this.poids;
     }
     
 }

@@ -5,7 +5,7 @@ Classe GOriente définissant un Graphe orienté
 Sous classe de la classe abstraite Graphe
 Auteur : Béryl CASSEL
 Date de création : 27/01/2022
-Date de dernière modification : 02/02/2022
+Date de dernière modification : 01/03/2022
 =============================================*/
 
 public class GOriente extends Graphe {
@@ -58,6 +58,7 @@ public class GOriente extends Graphe {
                 du graphe et on modifie la matrice d'adjacence*/
                 this.version = this.copie();
                 this.adj[s][d] = a.getPoids();
+                this.placeArc(a);
             } else {
                 System.out.println("Il existe déjà un arc entre ces deux sommets");
             }
@@ -77,6 +78,14 @@ public class GOriente extends Graphe {
             /*Si l'arc est présent, on le supprime*/
             this.version = this.copie();
             this.adj[a.getSrc()][a.getDest()] = 0;
+            int ind = this.lstArcs.indexOf(a);
+            ArrayList<Arc> aux = new ArrayList<Arc>();
+            for (int j=0;j<this.lstArcs.size();j++){
+                if (j != ind){
+                    aux.add(this.lstArcs.get(j));
+                }
+            }
+            this.lstArcs = aux;
         } else {
             System.out.println("L'arc n'est pas dans le graphe");
         }
@@ -95,6 +104,8 @@ public class GOriente extends Graphe {
             le poids passé en paramètre*/
             this.version = this.copie();
             this.adj[a.getSrc()][a.getDest()] = p;
+            int ind = this.lstArcs.indexOf(a);
+            this.lstArcs.get(ind).setPoids(p);
         } else {
             System.out.println("L'arc à modifier n'est pas dans le graphe");
         }  

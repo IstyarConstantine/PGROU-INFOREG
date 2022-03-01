@@ -9,7 +9,7 @@ Classe abstraite Graphe définissant la structure
 générale d'un graphe
 Auteur : Béryl CASSEL
 Date de création : 27/01/2022
-Date de dernière modification : 28/02/2022
+Date de dernière modification : 01/03/2022
 =============================================*/
 
 public abstract class Graphe {
@@ -117,6 +117,15 @@ public abstract class Graphe {
      * la matrice d'adjacence du graphe
      */
     public void afficher(){
+        System.out.println("Noeuds :");
+        for (int i=0;i<this.nbsommets;i++){
+            System.out.println(this.lstNoeuds.get(i).toString());
+        }
+        System.out.println("Arcs :");
+        for (int i=0;i<this.lstArcs.size();i++){
+            System.out.println(this.lstArcs.get(i).toString());
+        }
+        System.out.println("Matrice :");
         String t;
         for (int i=0;i<this.nbsommets;i++){
             t = "|";
@@ -194,8 +203,16 @@ public abstract class Graphe {
                     }
                 }
             }
+            ArrayList<Arc> aux3 = new ArrayList<Arc>();
+            for (int i=0;i<this.lstArcs.size();i++){
+                Arc a = this.lstArcs.get(i);
+                if (a.decale(id)){
+                    aux3.add(a);
+                }
+            }
             this.lstNoeuds = aux1;
             this.adj = aux2;
+            this.lstArcs = aux3;
             --this.nbsommets;
         }
     }
@@ -207,9 +224,7 @@ public abstract class Graphe {
      * (true si l'Arc est dans le graphe, false sinon)
      */
     public boolean estPresent(Arc a){
-        return (a.getSrc() < this.nbsommets) 
-            && (a.getDest() < this.nbsommets) 
-            && (this.adj[a.getSrc()][a.getDest()] == a.getPoids());
+        return this.lstArcs.contains(a);
     }
 
     /**
@@ -313,6 +328,45 @@ public abstract class Graphe {
         } catch (IOException e) {
             System.out.println("Erreur");
         }
+    }
+
+    protected void placeArc(Arc a){
+        int i = 0;
+        boolean place = false;
+        int s = a.getSrc();
+        int d = a.getDest();
+        ArrayList<Arc> aux = new ArrayList<Arc>();
+        while ((i<this.lstArcs.size()) && (!place)){
+            Arc arc = this.lstArcs.get(i);
+            int sbis = arc.getSrc();
+            int dbis = arc.getDest();
+            if (sbis < s){
+                aux.add(arc);
+                ++i;
+            } else {
+                if (sbis == s){
+                    if (dbis < d){
+                        aux.add(arc);
+                        ++i;
+                    } else {
+                        aux.add(a);
+                        place = true;
+                    }
+                } else {
+                    aux.add(a);
+                    place = true;
+                }
+            }
+        }
+        if (place){
+            while (i<this.lstArcs.size()){
+                aux.add(this.lstArcs.get(i));
+                ++i;
+            }
+        } else {
+            aux.add(a);
+        }
+        this.lstArcs = aux;
     }
 
 }
