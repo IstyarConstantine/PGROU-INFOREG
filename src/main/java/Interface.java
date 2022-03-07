@@ -36,6 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JInternalFrame;
 
 public class Interface {
     
@@ -200,11 +201,24 @@ public class Interface {
         JMenuItem ouvrir = new JMenuItem("Ouvrir");
         JMenuItem enregistrer = new JMenuItem("Enregistrer");
         JMenuItem enregistrerSous = new JMenuItem("EnregistrerSous");
+        JMenu exporter = new JMenu("Exporter");
+        
+        JMenuItem exportLatex = new JMenuItem("Exporter au format LaTeX");
+        exportLatex.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                //TODO 
+                //idée : fenêtre dans laquelle on remplit les critères (couleurs, style ...)
+            }
+        });
+        exporter.add(exportLatex);
         
         fileMenu.add(ouvrir);
         fileMenu.addSeparator();
         fileMenu.add(enregistrer);
         fileMenu.add(enregistrerSous);
+        fileMenu.addSeparator();
+        fileMenu.add(exporter);
         
         JMenuItem prim = new JMenuItem("Prim");
         JMenuItem dijkstra = new JMenuItem("Dijkstra");
@@ -212,9 +226,24 @@ public class Interface {
         traitMenu.add(prim);
         traitMenu.add(dijkstra);
         
-        //Sub Menus
-        JMenu helpSubMenu = new JMenu("Sub Menu");
-        JMenuItem helpSubMenuItem1 = new JMenuItem("Help Sub menu item 1");
+        //Sub Menus de Aide
+        JMenu helpSubMenu = new JMenu("Utilisation des boutons");
+        JMenuItem helpSubMenuItem1 = new JMenuItem("Création de noeud");
+        helpSubMenuItem1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                String str = "Pour créer des noeuds : \n"
+                                + "\n"
+                                + "    - veillez à ce que le bouton 'Noeud' soit activé \n"
+                                + "\n"
+                                + "    - puis, déplacer votre souris sur une zone et cliquer pour créer un noeud \n"
+                                + "\n"
+                                + "    - pour déplacer un noeud : maintenez le clique gauche sur un noeud, déplacez vers une zone de l'écran et relâchez\n"
+                                + "\n"
+                                + "    - pour supprimer un noeud : double-cliquez sur un noeud\n";
+                JOptionPane.showMessageDialog(frame ,str,"Bouton Noeud", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
         JMenuItem helpSubMenuItem2 = new JMenuItem("Help Sub menu item 2");
         helpMenu.add(helpSubMenu);
         helpSubMenu.add(helpSubMenuItem1);
