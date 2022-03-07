@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -194,6 +195,7 @@ public class Interface {
         JMenu fileMenu = new JMenu("Fichier");
         JMenu traitMenu = new JMenu("Traitement");
         JMenu helpMenu = new JMenu("Aide");
+        JMenu aboutMenu = new JMenu("A propos");
         
         JMenuItem ouvrir = new JMenuItem("Ouvrir");
         JMenuItem enregistrer = new JMenuItem("Enregistrer");
@@ -217,10 +219,25 @@ public class Interface {
         helpMenu.add(helpSubMenu);
         helpSubMenu.add(helpSubMenuItem1);
         helpSubMenu.add(helpSubMenuItem2);
+        
+        JMenuItem credits = new JMenuItem("Crédits");
+        aboutMenu.add(credits);
+        
+        credits.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                String creditStr = "Application créée par Béryl CASSEL, Cristobal CARRASCO DE RODT, Jorge QUISPE , Isaías VENEGAS et Samy AMAL \n"
+                                    + "\n"
+                                    + "dans le cadre du projet de groupe INFOREG \n"
+                                    + "\n"
+                                    + "encadré par Olivier ROUX";
+                JOptionPane.showMessageDialog(frame ,creditStr,"Credits", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
                 
         menuBar.add(fileMenu);
         menuBar.add(traitMenu);
         menuBar.add(helpMenu); 
+        menuBar.add(aboutMenu);
         
         //CTRL Z / CTRL Y
         ImageIcon iconBack = new ImageIcon("back.png");
