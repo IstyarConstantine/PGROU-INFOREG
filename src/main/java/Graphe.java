@@ -22,7 +22,7 @@ public abstract class Graphe {
     /**
      * Nombre maximal de sommets que peut contenir un graphe 
      */
-    protected final int nbmax = 100;
+    protected final static int nbmax = 100;
 
     /**
      * Matrice d'adjacence
@@ -42,7 +42,7 @@ public abstract class Graphe {
      * Constructeur d'un graphe
      */
     public Graphe(){
-        this.adj = new int[this.nbmax][this.nbmax];
+        this.adj = new int[Graphe.nbmax][Graphe.nbmax];
         this.nbsommets = 0;
         this.lstArcs = new ArrayList<Arc>();
         this.lstNoeuds = new ArrayList<Noeud>();
@@ -148,7 +148,7 @@ public abstract class Graphe {
      * pour pouvoir revenir en arrière
      */
     public void addSommet(int x, int y, Color c, String n){
-        if (this.nbsommets < this.nbmax){
+        if (this.nbsommets < Graphe.nbmax){
             /*Sauvegarde du Graphe actuel*/
             this.version = this.copie();
             /*Ajout du sommet en ajoutant des zéros à adj*/
@@ -179,7 +179,7 @@ public abstract class Graphe {
             this.version = this.copie();
             /*Suppression du sommet*/
             ArrayList<Noeud> aux1 = new ArrayList<Noeud>();
-            int[][] aux2 = new int[this.nbmax][this.nbmax];
+            int[][] aux2 = new int[Graphe.nbmax][Graphe.nbmax];
             for (int i=0;i<this.nbsommets;i++){
                 if (i<id){
                     aux1.add(this.lstNoeuds.get(i));
