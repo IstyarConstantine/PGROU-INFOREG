@@ -18,6 +18,10 @@ public class GNonOriente extends Graphe {
         super();
     }
 
+    public GNonOriente(Draw d){
+        super(d);
+    }
+
     @Override
     /**
      * Méthode permettant de copier un GNonOriente
@@ -61,68 +65,12 @@ public class GNonOriente extends Graphe {
                 this.adj[s][d] = p;
                 this.adj[d][s] = p;
                 this.placeArc(a);
-                this.placeArc(a.inverse());
             } else {
                 System.out.println("Il existe déjà un arc entre ces deux sommets");
             }
         } else {
             System.out.println("Impossible d'ajouter cet arc");
         }
-    }
-
-    @Override
-    /**
-     * Méthode permettant de supprimer un arc présent dans le graphe
-     * Avec sauvegarde du graphe initial
-     * @param a = Arc à supprimer
-     */
-    public void suppArc(Arc a) {
-        if (this.estPresent(a)){
-            /*Si l'arc est présent, on le supprime en mettant 
-            à 0 les deux case de la matrice concernées*/
-            this.version = this.copie();
-            int s = a.getSrc();
-            int d = a.getDest();
-            this.adj[s][d] = 0;
-            this.adj[d][s] = 0;
-            int ind1 = this.lstArcs.indexOf(a);
-            int ind2 = this.lstArcs.indexOf(a.inverse());
-            ArrayList<Arc> aux = new ArrayList<Arc>();
-            for (int j=0;j<this.lstArcs.size();j++){
-                if ((j != ind1) && (j != ind2)){
-                    aux.add(this.lstArcs.get(j));
-                }
-            }
-            this.lstArcs = aux;
-        } else {
-            System.out.println("L'arc n'est pas dans le graphe");
-        }  
-    }
-
-    @Override
-    /**
-     * Méthode permettant de modifier un arc présent dans le graphe
-     * Avec sauvegarde du graphe initial
-     * @param a = Arc à modifier
-     * @param p = poids à attribuer à l'Arc
-     */
-    public void modifArc(Arc a, int p) {
-        if (this.estPresent(a)){
-            /*Si l'arc est présent, on attribue 
-            le poids passé en paramètre aux deuw
-            éléments de la matrice concernés*/
-            this.version = this.copie();
-            int s = a.getSrc();
-            int d = a.getDest();
-            this.adj[s][d] = p;
-            this.adj[d][s] = p;
-            int ind1 = this.lstArcs.indexOf(a);
-            int ind2 = this.lstArcs.indexOf(a.inverse());
-            this.lstArcs.get(ind1).setPoids(p);
-            this.lstArcs.get(ind2).setPoids(p);
-        } else {
-            System.out.println("L'arc à modifier n'est pas dans le graphe");
-        }      
     }
     
 }

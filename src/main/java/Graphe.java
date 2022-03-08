@@ -2,7 +2,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.awt.Color;
 
 /*=============================================
 Classe abstraite Graphe définissant la structure 
@@ -46,6 +45,24 @@ public abstract class Graphe {
         this.nbsommets = 0;
         this.lstArcs = new ArrayList<Arc>();
         this.lstNoeuds = new ArrayList<Noeud>();
+    }
+
+    public Graphe(Draw d){
+        this.nbsommets = 0;
+        this.adj = new int[Graphe.nbmax][Graphe.nbmax];
+        this.lstArcs = new ArrayList<Arc>();
+        this.lstNoeuds = new ArrayList<Noeud>();
+        for (int i=0;i<d.getNumOfCircles();i++){
+            addSommet(d.getCircLbl()[i],i);
+        }
+        ArrayList<Draw.MyLine> lines = d.getLines();
+        for (int i=0;i<d.getNumOfLines();i++){
+            Draw.MyLine l = lines.get(i);
+            int p = l.getPoids();
+            int src = d.getRec(l.getFromPoint().x,l.getFromPoint().y);
+            int dest = d.getRec(l.getToPoint().x,l.getToPoint().y);
+            addArc(src, dest, p, i);
+        }
     }
 
     public ArrayList<Noeud> getLstNoeuds() {
@@ -147,7 +164,7 @@ public abstract class Graphe {
      * Modifie aussi la version précédente du graphe 
      * pour pouvoir revenir en arrière
      */
-    public void addSommet(int x, int y, Color c, String n){
+    public void addSommet(String n,int ind){
         if (this.nbsommets < Graphe.nbmax){
             /*Sauvegarde du Graphe actuel*/
             this.version = this.copie();
@@ -156,7 +173,7 @@ public abstract class Graphe {
                 this.adj[i][this.nbsommets] = 0;
                 this.adj[this.nbsommets][i] = 0;
             }
-            Noeud s = new Noeud(x,y,c,n);
+            Noeud s = new Noeud(n,ind);
             s.setId(this.nbsommets);
             this.lstNoeuds.add(s);
             ++this.nbsommets;
@@ -165,57 +182,7 @@ public abstract class Graphe {
         }
     }
 
-    /**
-     * Méthode permettant de supprimer un sommet et les arcs 
-     * passant par lui si cela est encore possible
-     * Modifie aussi la version précédente du graphe 
-     * pour pouvoir revenir en arrière
-     */
-    public void suppSommet(int id){
-        if (this.nbsommets == 0){
-            System.out.println("Il n'y a pas de sommet à supprimer");
-        } else {
-            /*Sauvegarde du Graphe actuel*/
-            this.version = this.copie();
-            /*Suppression du sommet*/
-            ArrayList<Noeud> aux1 = new ArrayList<Noeud>();
-            int[][] aux2 = new int[Graphe.nbmax][Graphe.nbmax];
-            for (int i=0;i<this.nbsommets;i++){
-                if (i<id){
-                    aux1.add(this.lstNoeuds.get(i));
-                    for (int j=0; j<=i;j++){
-                        aux2[i][j]=this.adj[i][j];
-                        aux2[j][i]=this.adj[i][j];
-                    }
-                } else {
-                    if (i>id){
-                        Noeud s = this.lstNoeuds.get(i).deplace();
-                        aux1.add(s);
-                        for (int j=0;j<=i-1;j++){
-                            if (j<id){
-                                aux2[j][i-1]=this.adj[j][i];
-                                aux2[i-1][j]=this.adj[i][j];
-                            } else {
-                                aux2[j][i-1]=this.adj[j+1][i];
-                                aux2[i-1][j]=this.adj[i][j+1];
-                            }
-                        }
-                    }
-                }
-            }
-            ArrayList<Arc> aux3 = new ArrayList<Arc>();
-            for (int i=0;i<this.lstArcs.size();i++){
-                Arc a = this.lstArcs.get(i);
-                if (a.decale(id)){
-                    aux3.add(a);
-                }
-            }
-            this.lstNoeuds = aux1;
-            this.adj = aux2;
-            this.lstArcs = aux3;
-            --this.nbsommets;
-        }
-    }
+
 
     /**
      * Test si un Arc est bien présent dans le graphe
@@ -241,52 +208,9 @@ public abstract class Graphe {
      * @param d = destination de l'arc à ajouter
      * @param p = poids de l'arc à ajouter
      */
-    public void addArc(int s, int d, int p, Color c){
-        Arc a = new Arc(s,d,p);
-        a.setCol(c);
+    public void addArc(int s, int d, int p, int ind){
+        Arc a = new Arc(s,d,p,ind);
         this.addArc(a);
-    }
-
-    /**
-     * Méthode permettant de supprimer un Arc passé en 
-     * paramètre au Graphe si cela est possible
-     * @param a l'Arc à supprimer
-     */
-    public abstract void suppArc(Arc a);
-    
-    /**
-     * Méthode permettant de supprimer un arc en donnant 
-     * directement ses composantes en paramètre
-     * @param s = source de l'arc à supprimer
-     * @param d = destination de l'arc à supprimer
-     * @param p = poids de l'arc à supprimer
-     */
-    public void suppArc(int s, int d, int p, Color c){
-        Arc a = new Arc(s,d,p);
-        a.setCol(c);
-        this.suppArc(a);
-    }
-
-    /**
-     * Méthode permettant de modifier le poids 
-     * d'un Arc passé en paramètre
-     * @param a l'Arc à modifier
-     * @param p le poids à lui attribuer
-     */
-    public abstract void modifArc(Arc a, int p);
-    
-    /**
-     * Méthode permettant de modifier le poids 
-     * d'un arc en entrant ses composantes en paramètre
-     * @param s = source de l'arc à modifier
-     * @param d = destination de l'arc à modifier
-     * @param p1 = poids de l'arc à modifier
-     * @param p2 = nouveau poids à lui attribuer
-     */
-    public void modifArc(int s, int d, int p1, int p2, Color c){
-        Arc a = new Arc(s,d,p1);
-        a.setCol(c);
-        this.modifArc(a,p2);
     }
 
     /**

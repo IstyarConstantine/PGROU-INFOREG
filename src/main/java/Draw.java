@@ -3,7 +3,7 @@ Classe Draw permettant de dessiner les noeuds et arcs
 Sous classe de la classe Traitement
 Auteur : Samy AMAL
 Date de création : 03/03/2022
-Date de dernière modification : 06/03/2022
+Date de dernière modification : 08/03/2022
 =============================================*/
 
 import java.awt.Color;
@@ -35,6 +35,8 @@ public class Draw extends JPanel implements MouseMotionListener {
     /** Indice du dernier cercle sélectionné, initialisé à -1 */
     private int currentCircleIndex = -1;
     //private static int countArcClicks = 0;
+    /** Couleur courante de la classe, initilisée à bleue */
+    private Color currentColor = Color.BLUE;
     
     //Pour les Arcs :
     /** Dernier Nœud sur lequel on a passé la souris */
@@ -43,6 +45,26 @@ public class Draw extends JPanel implements MouseMotionListener {
     private ArrayList<MyLine> lines = new ArrayList<>();
     /** Nombre d'Arcs dessinés */
     private int numOfLines = 0;
+
+    public int getNumOfCircles() {
+		return numOfCircles;
+	}
+
+    public int getNumOfLines(){
+        return numOfLines;
+    }
+
+    public void setCurrentColor(Color c){
+        this.currentColor = c;
+    }
+    
+    public ArrayList<MyLine> getLines(){
+        return lines;
+    }
+
+    public String[] getCircLbl(){
+        return circLbl;
+    }
       
     public Draw() {
         addMouseListener(new MouseAdapter() {
@@ -90,8 +112,14 @@ public class Draw extends JPanel implements MouseMotionListener {
                     //ATTENTION : il faudra prendre le compte le cas où on pointe vers le meme cercle
                     if (currentCircleIndex >= 0) { // inside circle
                         Ellipse2D.Double p = circ[currentCircleIndex];
-                        addLine(new MyLine(fromPoint, p));
+                        String text = JOptionPane.showInputDialog("Entrer le poids de l'Arc (seuls les entiers seront acceptés):");
+                        try {
+                            int pds = Integer.parseInt(text);
+                            addLine(new MyLine(fromPoint, p,pds));
                         repaint();
+                        } catch (Exception e) {
+                            System.out.println("Pas un entier !");
+                        }
                     }
                 }
             }
@@ -124,9 +152,15 @@ public class Draw extends JPanel implements MouseMotionListener {
                     (int) circ[i].getCenterY() + 6);
         }
         for (int i = 0 ; i < numOfLines; i++){
-            ((Graphics2D) g).setPaint(Color.BLUE);
-            ((Graphics2D) g).drawLine(lines.get(i).getFromPoint().x, lines.get(i).getFromPoint().y,
-                    lines.get(i).getToPoint().x, lines.get(i).getToPoint().y);
+            ((Graphics2D) g).setPaint(lines.get(i).getC());
+            int x1 = lines.get(i).getFromPoint().x;
+            int y1 = lines.get(i).getFromPoint().y;
+            int x2 = lines.get(i).getToPoint().x;
+            int y2 = lines.get(i).getToPoint().y;
+            ((Graphics2D) g).drawLine(x1,y1,x2,y2);
+            int x = (x1+x2)/2;
+            int y = (y1+y2)/2;
+            ((Graphics2D) g).drawString(""+lines.get(i).getPoids(),x,y-10);
             
         }
     }
@@ -230,38 +264,12 @@ public class Draw extends JPanel implements MouseMotionListener {
                 Graphics graphics = getGraphics();
                 graphics.setXORMode(getBackground());
                 ((Graphics2D) graphics).draw(circ[currentCircleIndex]);
-                ((Graphics2D) graphics).drawString(circLbl[currentCircleIndex],
-                    (int) circ[currentCircleIndex].getCenterX() - 5,
-                    (int) circ[currentCircleIndex].getCenterY() + 6);
-                if(numOfLines > 0){
-                    for (MyLine l : lines){
-                        if (l.getFrom().equals(circ[currentCircleIndex]) || l.getTo().equals(circ[currentCircleIndex])){ 
-                            ((Graphics2D) graphics).setPaint(Color.BLUE);
-                            ((Graphics2D) graphics).drawLine(l.getFromPoint().x,l.getFromPoint().y,
-                            l.getToPoint().x, l.getToPoint().y);
-                        }
-                    }
-                }
                 circ[currentCircleIndex].x = x;
                 circ[currentCircleIndex].y = y;
                 ((Graphics2D) graphics).setPaint(Color.BLACK);
                 ((Graphics2D) graphics).draw(circ[currentCircleIndex]);
-                //((Graphics2D) graphics).setPaint(Color.WHITE);
-                //((Graphics2D) graphics).fill(circ[currentCircleIndex]);
-                //((Graphics2D) graphics).setPaint(Color.BLACK);
-                ((Graphics2D) graphics).drawString(circLbl[currentCircleIndex],
-                    (int) circ[currentCircleIndex].getCenterX() - 5,
-                    (int) circ[currentCircleIndex].getCenterY() + 6);
-                if(numOfLines > 0){
-                    for (MyLine l : lines){
-                        if (l.getFrom().equals(circ[currentCircleIndex]) || l.getTo().equals(circ[currentCircleIndex])){
-                            ((Graphics2D) graphics).setPaint(Color.BLUE);  
-                            ((Graphics2D) graphics).drawLine(l.getFromPoint().x,l.getFromPoint().y,
-                            l.getToPoint().x, l.getToPoint().y);
-                        }
-                    }
-                }
                 graphics.dispose();
+                repaint();
             }
         }    
     }
@@ -272,18 +280,32 @@ public class Draw extends JPanel implements MouseMotionListener {
         private final Ellipse2D.Double from;
         /** Cercle/Nœeud d'arrivée */
         private final Ellipse2D.Double  to;
+        /** Poids de l'Arc */
+        private int poids;
+        /** Couleur */
+        private Color c;
 
         /** 
          * Constructeur
          * @param fromPoint = cercle de départ
          * @param toPoint = cercle d'arrivée
          */
-        public MyLine(Ellipse2D.Double fromPoint, Ellipse2D.Double toPoint) {
+        public MyLine(Ellipse2D.Double fromPoint, Ellipse2D.Double toPoint, int pds) {
             this.from = fromPoint;
             this.to = toPoint;
+            this.poids = pds;
+            this.c = currentColor;
+        }
+
+        public int getPoids(){
+            return poids;
         }
         
-        /** 
+        public Color getC() {
+			return c;
+		}
+
+		/** 
          * Getter du cercle de départ 
          * @return from (attribut)
          */
@@ -322,4 +344,5 @@ public class Draw extends JPanel implements MouseMotionListener {
         }
 
     }
+
 }

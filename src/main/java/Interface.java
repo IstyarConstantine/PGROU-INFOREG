@@ -36,7 +36,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JInternalFrame;
 
 public class Interface {
     
@@ -45,6 +44,7 @@ public class Interface {
     /** Les JPanel. */
     private JToolBar toolBarButtons;
     private JPanel paneImage;
+    private Draw d;
     
     /** Le Menu. */ 
     private JMenuBar menuBar;
@@ -99,8 +99,8 @@ public class Interface {
         //BorderLayout.CENTER permet de fixer le JPanel au centre
         frame.add(paneImage,BorderLayout.CENTER);
         frame.setJMenuBar(menuBar);
-
-        frame.getContentPane().add(new Draw());
+        this.d = new Draw();
+        frame.getContentPane().add(this.d);
         
         frame.pack();
         
@@ -138,6 +138,7 @@ public class Interface {
             Color c = JColorChooser.showDialog(frame, "Choose a color", color);
             if (c!=null) {
                 setColor(c);
+                d.setCurrentColor(c);
             }
         };
         colorButton.addActionListener(colorListener);
@@ -222,9 +223,19 @@ public class Interface {
         
         JMenuItem prim = new JMenuItem("Prim");
         JMenuItem dijkstra = new JMenuItem("Dijkstra");
+        JMenuItem finmodif = new JMenuItem("Export Graphe");
+        finmodif.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ea) {
+                System.out.println(d.getNumOfCircles());
+                GNonOriente g = new GNonOriente(d);
+                g.afficher();
+            }
+        });
 
         traitMenu.add(prim);
         traitMenu.add(dijkstra);
+        traitMenu.add(finmodif);
         
         //Sub Menus de Aide
         JMenu helpSubMenu = new JMenu("Utilisation des boutons");

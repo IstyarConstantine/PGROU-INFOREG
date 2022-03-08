@@ -18,6 +18,10 @@ public class GOriente extends Graphe {
         super();
     }
 
+    public GOriente(Draw d){
+        super(d);
+    }
+    
     @Override
     /**
      * Méthode permettant de copier un GOriente
@@ -67,47 +71,4 @@ public class GOriente extends Graphe {
         }
     }
 
-    @Override
-    /**
-     * Méthode permettant de supprimer un arc orienté présent dans le graphe
-     * Avec sauvegarde du graphe initial
-     * @param a = Arc à supprimer
-     */
-    public void suppArc(Arc a){
-        if (this.estPresent(a)){
-            /*Si l'arc est présent, on le supprime*/
-            this.version = this.copie();
-            this.adj[a.getSrc()][a.getDest()] = 0;
-            int ind = this.lstArcs.indexOf(a);
-            ArrayList<Arc> aux = new ArrayList<Arc>();
-            for (int j=0;j<this.lstArcs.size();j++){
-                if (j != ind){
-                    aux.add(this.lstArcs.get(j));
-                }
-            }
-            this.lstArcs = aux;
-        } else {
-            System.out.println("L'arc n'est pas dans le graphe");
-        }
-    }
-
-    @Override
-    /**
-     * Méthode permettant de modifier un arc orienté présent dans le graphe
-     * Avec sauvegarde du graphe initial
-     * @param a = Arc à modifier
-     * @param p = poids à attribuer à l'Arc
-     */
-    public void modifArc(Arc a, int p) {
-        if (this.estPresent(a)){
-            /*Si l'arc est présent, on lui attribue 
-            le poids passé en paramètre*/
-            this.version = this.copie();
-            this.adj[a.getSrc()][a.getDest()] = p;
-            int ind = this.lstArcs.indexOf(a);
-            this.lstArcs.get(ind).setPoids(p);
-        } else {
-            System.out.println("L'arc à modifier n'est pas dans le graphe");
-        }  
-    }
 }

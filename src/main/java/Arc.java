@@ -5,9 +5,12 @@ Date de création : 26/01/2022
 Date de dernière modification : 01/03/2022
 =============================================*/
 
-import java.awt.Color;
-
 public class Arc {
+
+    /**
+     * Indice de la ligne correspondant dans la liste lines de Draw()
+     */
+    private int line;
 
     /**
      * Sommet source
@@ -25,31 +28,28 @@ public class Arc {
     private int poids;
 
     /**
-     * Couleur de l'arc
-     */
-    private Color col;
-
-    /**
      * Constructeur d'un Arc orienté
      * @param s = sommet source de l'Arc
      * @param d = sommet de destination de l'Arc
      * @param p = poids de l'Arc
+     * @param ind = indice de la ligne correspondante
      */
-    Arc(int s, int d, int p){
+    Arc(int s, int d, int p, int ind){
         this.src = s;
         this.dest = d;
         this.poids = p;
+        this.setLine(ind);
     }
 
-    public Color getCol() {
-        return col;
-    }
+    public int getLine() {
+		return line;
+	}
 
-    public void setCol(Color col) {
-        this.col = col;
-    }
+	public void setLine(int line) {
+		this.line = line;
+	}
 
-    /**
+	/**
      * Getter du sommet source
      * @return la valeur de l'attribut src
      */
@@ -105,28 +105,6 @@ public class Arc {
      */
     public int compareTo(Arc compareEdge){
         return this.poids - compareEdge.poids;
-    }
-
-    public boolean decale(int id){
-        boolean conserve;
-        if ((this.src==id) || (this.dest==id)){
-            conserve = false;
-        } else {
-            conserve = true;
-            if (this.src>id){
-                --this.src;
-            }
-            if (this.dest>id){
-                --this.dest;
-            }
-        }
-        return conserve;
-    }
-
-    public Arc inverse(){
-        Arc a = new Arc(this.dest,this.src,this.poids);
-        a.setCol(this.col);
-        return a;
     }
 
     public String toString(){

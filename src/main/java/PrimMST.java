@@ -24,7 +24,7 @@ public class PrimMST extends Traitement {
 
         // Initialize all keys as INFINITE
         for (int i = 0; i < G.nbsommets; i++) {
-            this.arbre[i] = new Arc(-1,-1,Integer.MAX_VALUE);
+            this.arbre[i] = new Arc(-1,-1,Integer.MAX_VALUE,0);
             vu[i] = false;
         }
 
@@ -51,7 +51,7 @@ public class PrimMST extends Traitement {
                 // mstSet[v] is false for vertices not yet included in MST
                 // Update the key only if graph[u][v] is smaller than key[v]
                 if (G.adj[u][v] != 0 && vu[v] == false && G.adj[u][v] < this.arbre[v].getPoids()) {
-                    this.arbre[v] = new Arc(v, u, G.adj[u][v]);
+                    this.arbre[v] = new Arc(v, u, G.adj[u][v],0);
                 }
         }
     }
