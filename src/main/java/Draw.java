@@ -74,79 +74,87 @@ public class Draw extends JPanel implements MouseMotionListener {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent evt) {
-                int x = evt.getX();
-                int y = evt.getY();
-                // Vérifie si on clique où non sur un cercle existant
-                currentCircleIndex = getRec(x, y);
-                // Si on souhaite ajouter un Nœud :
-                if (Interface.activeTool==Interface.NOEUD_TOOL) {
-                    if (currentCircleIndex < 0){ // not inside a circle
-                        add(x, y);
+                if (Interface.mode==Interface.EDITION_MODE){
+                    int x = evt.getX();
+                    int y = evt.getY();
+                    // Vérifie si on clique où non sur un cercle existant
+                    currentCircleIndex = getRec(x, y);
+                    // Si on souhaite ajouter un Nœud :
+                    if (Interface.activeTool==Interface.NOEUD_TOOL) {
+                        if (currentCircleIndex < 0){ // not inside a circle
+                            add(x, y);
+                        }
                     }
-                }
-                // Si on souhaite ajouter un label à un Nœud :
-                if (Interface.activeTool==Interface.LABEL_TOOL) {
-                    if (currentCircleIndex >= 0){ // inside a circle
-                        //ERREUR SI ON CANCEL
-                        String lbl = JOptionPane.showInputDialog("Entrer label :");
-                        //System.out.println(lbl);
-                        //lbl.closeLbl();
-                        circLbl[currentCircleIndex] = lbl;
-                        repaint();
-                    }   
-                }
-                if (Interface.activeTool==Interface.ARC_TOOL) {
-                    if ((currentCircleIndex >= 0) && (fromPoint==null)){
-                        fromPoint = circ[currentCircleIndex];
+                    // Si on souhaite ajouter un label à un Nœud :
+                    if (Interface.activeTool==Interface.LABEL_TOOL) {
+                        if (currentCircleIndex >= 0){ // inside a circle
+                            //ERREUR SI ON CANCEL
+                            String lbl = JOptionPane.showInputDialog("Entrer label :");
+                            //System.out.println(lbl);
+                            //lbl.closeLbl();
+                            circLbl[currentCircleIndex] = lbl;
+                            repaint();
+                        }   
+                    }
+                    if (Interface.activeTool==Interface.ARC_TOOL) {
+                        if ((currentCircleIndex >= 0) && (fromPoint==null)){
+                            fromPoint = circ[currentCircleIndex];
+                        }
                     }
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent evt) {
-                int x = evt.getX();
-                int y = evt.getY();
-                // Vérifie si on clique où non sur un cercle existant
-                currentCircleIndex = getRec(x, y);
-                if (Interface.activeTool==Interface.ARC_TOOL){
-                    //ATTENTION : il faudra prendre le compte le cas où on pointe vers le meme cercle
-                    if ((currentCircleIndex >= 0) && (fromPoint!=null) && (!fromPoint.equals(circ[currentCircleIndex]))) { // inside circle
-                        Ellipse2D.Double p = circ[currentCircleIndex];
-                        String text = JOptionPane.showInputDialog("Entrer le poids de l'Arc (seuls les entiers seront acceptés):");
-                        try {
-                            int pds = Integer.parseInt(text);
-                            addLine(new MyLine(fromPoint, p,pds));
-                            repaint();
-                            //fromPoint = null;
-                        } catch (Exception e) {
-                            System.out.println("Pas un entier !");
-                            //fromPoint = null;
-                        } finally {
-                            fromPoint = null;
-                        }    
+                if (Interface.mode==Interface.EDITION_MODE){
+                    int x = evt.getX();
+                    int y = evt.getY();
+                    // Vérifie si on clique où non sur un cercle existant
+                    currentCircleIndex = getRec(x, y);
+                    if (Interface.activeTool==Interface.ARC_TOOL){
+                        //ATTENTION : il faudra prendre le compte le cas où on pointe vers le meme cercle
+                        if ((currentCircleIndex >= 0) && (fromPoint!=null) && (!fromPoint.equals(circ[currentCircleIndex]))) { // inside circle
+                            Ellipse2D.Double p = circ[currentCircleIndex];
+                            String text = JOptionPane.showInputDialog("Entrer le poids de l'Arc (seuls les entiers seront acceptés):");
+                            try {
+                                int pds = Integer.parseInt(text);
+                                addLine(new MyLine(fromPoint, p,pds));
+                                repaint();
+                                //fromPoint = null;
+                            } catch (Exception e) {
+                                System.out.println("Pas un entier !");
+                                //fromPoint = null;
+                            } finally {
+                                fromPoint = null;
+                            }    
+                        }
                     }
                 }
             }
             
             @Override
             public void mouseClicked(MouseEvent evt) {
-                // Si on clique deux fois sur un Nœud, on le supprime
-                if (Interface.activeTool==Interface.NOEUD_TOOL) {
-                    if (evt.getClickCount() >= 2) {
-                        remove(currentCircleIndex);
+                if (Interface.mode==Interface.EDITION_MODE){
+                    // Si on clique deux fois sur un Nœud, on le supprime
+                    if (Interface.activeTool==Interface.NOEUD_TOOL) {
+                        if (evt.getClickCount() >= 2) {
+                            remove(currentCircleIndex);
+                        }
                     }
                 }
-                if ((Interface.activeTool==Interface.TRAITEMENT_TOOL) && (dijkstra)){
-                    int x = evt.getX();
-                    int y = evt.getY();
-                    if (src == -1){
-                        src = getRec(x,y);
-                    } else if (dest == -1){
-                        dest = getRec(x,y);
-                        if (dest != -1) {
-                            dijkstra();
-                        } else {
-                            src = -1;
+                if (Interface.mode==Interface.TRAITEMENT_MODE) {
+                    if (dijkstra){
+                        int x = evt.getX();
+                        int y = evt.getY();
+                        if (src == -1){
+                            src = getRec(x,y);
+                        } else if (dest == -1){
+                            dest = getRec(x,y);
+                            if (dest != -1) {
+                                dijkstra();
+                            } else {
+                                src = -1;
+                            }
                         }
                     }
                 }

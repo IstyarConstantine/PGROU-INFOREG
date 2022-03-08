@@ -54,6 +54,7 @@ public class Interface {
     private JRadioButton noeud;
     private JRadioButton arc;
     private JRadioButton label;
+    private JRadioButton edition;
     private JRadioButton traitement;
     private JButton save;
     private JButton load;
@@ -80,7 +81,10 @@ public class Interface {
     public static final int NOEUD_TOOL = 11;
     public static final int ARC_TOOL = 12;
     public static final int LABEL_TOOL = 13;
-    public static final int TRAITEMENT_TOOL = 14;
+    protected static int mode;
+    public static final int EDITION_MODE = 1;
+    public static final int TRAITEMENT_MODE = 2;
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Interface()::createAndShowGui);
@@ -126,6 +130,7 @@ public class Interface {
         noeud = new JRadioButton("Noeud");
         arc = new JRadioButton("Arc"); 
         label = new JRadioButton("Label");
+        edition = new JRadioButton("Édition");
         traitement = new JRadioButton("Traitement");
         save = new JButton("SAUVEGARDER");
         load = new JButton("CHARGER");
@@ -153,19 +158,24 @@ public class Interface {
         toolBarButtons.addSeparator();
         
         JLabel l1 = new JLabel("  Action");
+        JLabel l2 = new JLabel("  Mode");
         //On crée un ButtonGroup pour que seul l'un puisse être activé à la fois 
         ButtonGroup groupAction = new ButtonGroup();
         groupAction.add(select);
         groupAction.add(noeud);
         groupAction.add(arc);
         groupAction.add(label);
-        groupAction.add(traitement);
+        ButtonGroup groupMode = new ButtonGroup();
+        groupMode.add(edition);
+        groupMode.add(traitement);
         //On ajoute les éléments au JPanel
         toolBarButtons.add(l1);
         toolBarButtons.add(select);
         toolBarButtons.add(noeud);
         toolBarButtons.add(arc);
         toolBarButtons.add(label);
+        toolBarButtons.add(l2);
+        toolBarButtons.add(edition);
         toolBarButtons.add(traitement);
         //pane.add(Box.createVerticalGlue());
 
@@ -184,17 +194,27 @@ public class Interface {
                     activeTool = ARC_TOOL;
                 } else if (ae.getSource()==label){
                     activeTool = LABEL_TOOL;
-                } else if (ae.getSource()==traitement) {
-                    activeTool = TRAITEMENT_TOOL;
-                }
+                } 
 
             }
         };
+        ActionListener modeGroupListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (ae.getSource()==edition) {
+                    mode = EDITION_MODE;
+                } else if (ae.getSource()==traitement) {
+                    mode = TRAITEMENT_MODE;
+                }
+            }
+        };
+
         select.addActionListener(toolGroupListener);
         noeud.addActionListener(toolGroupListener);
         arc.addActionListener(toolGroupListener);
         label.addActionListener(toolGroupListener);
-        traitement.addActionListener(toolGroupListener);
+        edition.addActionListener(modeGroupListener);
+        traitement.addActionListener(modeGroupListener);
         
         toolBarButtons.setFloatable(false);
         toolBarButtons.setBorderPainted(true);
