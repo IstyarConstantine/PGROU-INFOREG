@@ -69,6 +69,7 @@ public class PrimMST extends Traitement {
             System.out.println(src + " - " + dest + "\t" + this.arbre[i].getPoids());
             d.getLines().get(this.arbre[i].getLine()).setC(Color.RED);
         }
+        d.repaint();
     }
 
     /**

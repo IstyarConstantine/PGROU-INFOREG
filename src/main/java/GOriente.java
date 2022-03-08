@@ -5,7 +5,7 @@ Classe GOriente définissant un Graphe orienté
 Sous classe de la classe abstraite Graphe
 Auteur : Béryl CASSEL
 Date de création : 27/01/2022
-Date de dernière modification : 01/03/2022
+Date de dernière modification : 08/03/2022
 =============================================*/
 
 public class GOriente extends Graphe {

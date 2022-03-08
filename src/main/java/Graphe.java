@@ -8,7 +8,7 @@ Classe abstraite Graphe définissant la structure
 générale d'un graphe
 Auteur : Béryl CASSEL
 Date de création : 27/01/2022
-Date de dernière modification : 01/03/2022
+Date de dernière modification : 08/03/2022
 =============================================*/
 
 public abstract class Graphe {

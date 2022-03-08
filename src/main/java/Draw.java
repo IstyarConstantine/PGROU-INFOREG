@@ -37,10 +37,14 @@ public class Draw extends JPanel implements MouseMotionListener {
     //private static int countArcClicks = 0;
     /** Couleur courante de la classe, initilisée à bleue */
     private Color currentColor = Color.BLUE;
+
+    private int src = -1;
+    private int dest = -1;
+    boolean dijkstra = false;
     
     //Pour les Arcs :
     /** Dernier Nœud sur lequel on a passé la souris */
-    private Ellipse2D.Double fromPoint ;
+    private Ellipse2D.Double fromPoint = null ;
     /** Liste des Arcs */
     private ArrayList<MyLine> lines = new ArrayList<>();
     /** Nombre d'Arcs dessinés */
@@ -80,15 +84,6 @@ public class Draw extends JPanel implements MouseMotionListener {
                         add(x, y);
                     }
                 }
-                // Si on souhaite ajouter un Arc
-                if (Interface.activeTool==Interface.ARC_TOOL){
-                    if (currentCircleIndex >= 0){ // inside a circle
-                        fromPoint = circ[currentCircleIndex];
-                        //TODO - idée : détecter deuxieme clique à la suite en étant avec arctool
-                        //g.drawLine(X1,X2,Y1,Y2);
-                        //countArcClicks==0;
-                    }
-                }
                 // Si on souhaite ajouter un label à un Nœud :
                 if (Interface.activeTool==Interface.LABEL_TOOL) {
                     if (currentCircleIndex >= 0){ // inside a circle
@@ -100,6 +95,11 @@ public class Draw extends JPanel implements MouseMotionListener {
                         repaint();
                     }   
                 }
+                if (Interface.activeTool==Interface.ARC_TOOL) {
+                    if ((currentCircleIndex >= 0) && (fromPoint==null)){
+                        fromPoint = circ[currentCircleIndex];
+                    }
+                }
             }
 
             @Override
@@ -110,31 +110,49 @@ public class Draw extends JPanel implements MouseMotionListener {
                 currentCircleIndex = getRec(x, y);
                 if (Interface.activeTool==Interface.ARC_TOOL){
                     //ATTENTION : il faudra prendre le compte le cas où on pointe vers le meme cercle
-                    if (currentCircleIndex >= 0) { // inside circle
+                    if ((currentCircleIndex >= 0) && (fromPoint!=null) && (!fromPoint.equals(circ[currentCircleIndex]))) { // inside circle
                         Ellipse2D.Double p = circ[currentCircleIndex];
                         String text = JOptionPane.showInputDialog("Entrer le poids de l'Arc (seuls les entiers seront acceptés):");
                         try {
                             int pds = Integer.parseInt(text);
                             addLine(new MyLine(fromPoint, p,pds));
-                        repaint();
+                            repaint();
+                            //fromPoint = null;
                         } catch (Exception e) {
                             System.out.println("Pas un entier !");
-                        }
+                            //fromPoint = null;
+                        } finally {
+                            fromPoint = null;
+                        }    
                     }
                 }
             }
             
             @Override
-                public void mouseClicked(MouseEvent evt) {
-                    // Si on clique deux fois sur un Nœud, on le supprime
+            public void mouseClicked(MouseEvent evt) {
+                // Si on clique deux fois sur un Nœud, on le supprime
+                if (Interface.activeTool==Interface.NOEUD_TOOL) {
                     if (evt.getClickCount() >= 2) {
-                        if (Interface.activeTool==Interface.NOEUD_TOOL) {
-                            remove(currentCircleIndex);
+                        remove(currentCircleIndex);
+                    }
+                }
+                if ((Interface.activeTool==Interface.TRAITEMENT_TOOL) && (dijkstra)){
+                    int x = evt.getX();
+                    int y = evt.getY();
+                    if (src == -1){
+                        src = getRec(x,y);
+                    } else if (dest == -1){
+                        dest = getRec(x,y);
+                        if (dest != -1) {
+                            dijkstra();
+                        } else {
+                            src = -1;
                         }
                     }
                 }
-            });
-            addMouseMotionListener(this);
+            }
+        });
+        addMouseMotionListener(this);
     }
  
     //Méthode permettant de draw les éléments. */
@@ -148,8 +166,8 @@ public class Draw extends JPanel implements MouseMotionListener {
             //((Graphics2D) g).fill(circ[i]);
             ((Graphics2D) g).setPaint(Color.BLACK);
             ((Graphics2D) g).drawString(circLbl[i],
-                    (int) circ[i].getCenterX() - 5,
-                    (int) circ[i].getCenterY() + 6);
+                    (int) circ[i].getCenterX(),
+                    (int) circ[i].getCenterY() + 20);
         }
         for (int i = 0 ; i < numOfLines; i++){
             ((Graphics2D) g).setPaint(lines.get(i).getC());
@@ -189,7 +207,7 @@ public class Draw extends JPanel implements MouseMotionListener {
         if (numOfCircles < MAX) {
             //On ajoute un cercle à la liste circ et on actualise les attributs concernés
             circ[numOfCircles] =  new Ellipse2D.Double(x, y, circleW, circleW);
-            circLbl[numOfCircles] = " ";
+            circLbl[numOfCircles] = numOfCircles + "";
             currentCircleIndex = numOfCircles;
             numOfCircles++;
             //On actualise l'affichage avec le nouveau cercle
@@ -209,6 +227,22 @@ public class Draw extends JPanel implements MouseMotionListener {
             //On actualise l'affichage avec la nouvelle ligne
             repaint();
         }
+    }
+
+    public int findLine(int src, int dest){
+        boolean trouve = false;
+        int n = 0;
+        while ((n<this.numOfLines) && (!trouve)){
+            if ((this.lines.get(n).getFrom().equals(circ[src]))
+                && (this.lines.get(n).getTo().equals(circ[dest]))){
+                    trouve = true;
+                    return n;
+                }
+            else {
+                n++;
+            }
+        }
+        return -1;
     }
     
     @Override
@@ -272,6 +306,18 @@ public class Draw extends JPanel implements MouseMotionListener {
                 repaint();
             }
         }    
+    }
+
+    public void dijkstra(){
+        for (int i = 0;i<this.numOfLines;i++){
+            this.lines.get(i).setC(Color.BLUE);
+        }
+        repaint();
+        (new Dijkstra()).dijkstra(this, src, dest);
+        this.dijkstra = false;
+        this.src = -1;
+        this.dest = -1;
+        System.out.println(dijkstra);
     }
     
     /** Classe définissant une ligne */

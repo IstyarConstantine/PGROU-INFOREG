@@ -2,7 +2,7 @@
 Classe Objet Arc définissant un Arc orienté
 Auteur : Béryl CASSEL
 Date de création : 26/01/2022
-Date de dernière modification : 01/03/2022
+Date de dernière modification : 08/03/2022
 =============================================*/
 
 public class Arc {

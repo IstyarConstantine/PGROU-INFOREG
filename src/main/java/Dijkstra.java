@@ -6,6 +6,8 @@ Date de création : 04/02/2022
 Date de dernière modification : 10/02/2022
 =============================================*/
 
+import java.awt.Color;
+
 public class Dijkstra extends Traitement{
     
     /**
@@ -17,26 +19,20 @@ public class Dijkstra extends Traitement{
      * Liste des distances(poids)
      */
     private int dist[];
-    
-    /**
-     * Sommet source
-     */
-    private int src;
  
     /**
      * Méthode réalisant l'algorithme de Dijkstra du PCC
      * @param g Graphe
      * @param s sommet source
      */
-    public void dijkstra(Graphe g, int s){
-       
+    public void dijkstra(Draw d, int src, int dest){
+
+       GOriente g = new GOriente(d);
         this.dist = new int[g.getNbsommets()]; 
         // The output array. dist[i] will hold
         // the shortest distance from src to i
         
         this.predecesseur = new int[g.getNbsommets()];
-        
-        this.src = s ; //EST-CE UTILE ??
 
         // vu[i] will true if vertex i is included in shortest
         // path tree or shortest distance from src to i is finalized
@@ -49,9 +45,9 @@ public class Dijkstra extends Traitement{
         }
 
         // Distance of source vertex from itself is always 0
-        this.dist[s] = 0;
+        this.dist[src] = 0;
         // Source has no predecesseur
-        this.predecesseur[s] = -1;
+        this.predecesseur[src] = -1;
 
         // Find shortest path for all vertices
         for (int count = 0; count < g.getNbsommets() - 1; count++) {
@@ -75,36 +71,30 @@ public class Dijkstra extends Traitement{
                     this.predecesseur[v]= u;
                 }
         }
+        printResult(d,src,dest);
     }
         
     /**
      * Méthode permettant d'afficher le résultat
      * dans l'ordre croissant des distances parcourues
      */
-    public void printResult(){
+    public void printResult(Draw d,int src,int dest){
         System.out.println("Vertex \t\t Distance from Source \t\t Predecesseurs");
-        
-        //we print dist and predecesseur for the first vertex
-        System.out.println(0 + " \t\t " + dist[0] + " \t\t\t\t " + this.predecesseur[0]);
-        
+        int s = dest;
+        int p = predecesseur[s];
+        int count = 0;
         //index dist min and last dist
-        int minIndex = 0 ;
-        int minDist = Integer.MAX_VALUE;
-        int lastDist = 0 ;
-        //compteur
-        int c = 0;
-
-        while(c < this.dist.length-1){
-            for (int i = 1; i < this.dist.length; i++){
-                if(this.dist[i]<minDist && this.dist[i]>lastDist){
-                    minDist = this.dist[i];
-                    minIndex = i;
-                }
-            }
-            System.out.println(minIndex + " \t\t " + dist[minIndex] + " \t\t\t\t " + this.predecesseur[minIndex]);
-            lastDist = minDist;
-            minDist = Integer.MAX_VALUE; 
-            c = c+1 ;
+        while ((s!=src) && (count<d.getNumOfCircles()) && (p!=-1)){
+            System.out.println(s + " \t\t " + dist[s] + " \t\t\t\t " + p);
+            int ind = d.findLine(p, s);
+            d.getLines().get(ind).setC(Color.RED);
+            s = p;
+            p = predecesseur[p];
+            count++;
+        }
+        d.repaint();
+        if ((count==Graphe.nbmax) || (p==-1)){
+            System.out.println("Il n'existe pas de chemin entre ces deux sommets");
         }
     }
 
@@ -122,14 +112,6 @@ public class Dijkstra extends Traitement{
      */
     public int[] getDist() {
         return dist;
-    }
-
-    /**
-     * Getter du sommet source
-     * @return src
-     */
-    public int getSrc() {
-        return src;
     }
     
     

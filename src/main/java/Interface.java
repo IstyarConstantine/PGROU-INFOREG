@@ -2,7 +2,7 @@
 Classe Interface 
 Auteur : Samy AMAL
 Date de création : 03/03/2022
-Date de dernière modification : 06/03/2022
+Date de dernière modification : 08/03/2022
 =============================================*/
 
 import java.awt.BorderLayout;
@@ -54,6 +54,7 @@ public class Interface {
     private JRadioButton noeud;
     private JRadioButton arc;
     private JRadioButton label;
+    private JRadioButton traitement;
     private JButton save;
     private JButton load;
     private JButton clearSelection;
@@ -79,6 +80,7 @@ public class Interface {
     public static final int NOEUD_TOOL = 11;
     public static final int ARC_TOOL = 12;
     public static final int LABEL_TOOL = 13;
+    public static final int TRAITEMENT_TOOL = 14;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Interface()::createAndShowGui);
@@ -124,6 +126,7 @@ public class Interface {
         noeud = new JRadioButton("Noeud");
         arc = new JRadioButton("Arc"); 
         label = new JRadioButton("Label");
+        traitement = new JRadioButton("Traitement");
         save = new JButton("SAUVEGARDER");
         load = new JButton("CHARGER");
         
@@ -156,12 +159,14 @@ public class Interface {
         groupAction.add(noeud);
         groupAction.add(arc);
         groupAction.add(label);
+        groupAction.add(traitement);
         //On ajoute les éléments au JPanel
         toolBarButtons.add(l1);
         toolBarButtons.add(select);
         toolBarButtons.add(noeud);
         toolBarButtons.add(arc);
         toolBarButtons.add(label);
+        toolBarButtons.add(traitement);
         //pane.add(Box.createVerticalGlue());
 
         //ajoute un séparateur de taille par défaut
@@ -179,6 +184,8 @@ public class Interface {
                     activeTool = ARC_TOOL;
                 } else if (ae.getSource()==label){
                     activeTool = LABEL_TOOL;
+                } else if (ae.getSource()==traitement) {
+                    activeTool = TRAITEMENT_TOOL;
                 }
 
             }
@@ -187,6 +194,7 @@ public class Interface {
         noeud.addActionListener(toolGroupListener);
         arc.addActionListener(toolGroupListener);
         label.addActionListener(toolGroupListener);
+        traitement.addActionListener(toolGroupListener);
         
         toolBarButtons.setFloatable(false);
         toolBarButtons.setBorderPainted(true);
@@ -225,13 +233,17 @@ public class Interface {
         prim.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ea) {
-                PrimMST p = new PrimMST();
-                p.primMST(d); 
-                p.printResult(d);
-                d.repaint();
+                (new PrimMST()).primMST(d);
             }
         });
         JMenuItem dijkstra = new JMenuItem("Dijkstra");
+        dijkstra.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ea){
+                d.dijkstra=true;
+                System.out.println(d.dijkstra);
+            }
+        });
         JMenuItem finmodif = new JMenuItem("Export Graphe");
         finmodif.addActionListener(new ActionListener() {
             @Override
