@@ -40,7 +40,7 @@ public class Draw extends JPanel implements MouseMotionListener {
 
     private int src = -1;
     private int dest = -1;
-    boolean dijkstra = false;
+    private boolean oriente;
     
     //Pour les Arcs :
     /** Dernier Nœud sur lequel on a passé la souris */
@@ -53,6 +53,14 @@ public class Draw extends JPanel implements MouseMotionListener {
     public int getNumOfCircles() {
 		return numOfCircles;
 	}
+
+    public boolean isOriente() {
+        return oriente;
+    }
+
+    public void setOriente(boolean oriente) {
+        this.oriente = oriente;
+    }
 
     public int getNumOfLines(){
         return numOfLines;
@@ -143,7 +151,7 @@ public class Draw extends JPanel implements MouseMotionListener {
                     }
                 }
                 if (Interface.mode==Interface.TRAITEMENT_MODE) {
-                    if (dijkstra){
+                    if (Interface.activeTraitement==Interface.DIJKSTRA_TRAITEMENT){
                         int x = evt.getX();
                         int y = evt.getY();
                         if (src == -1){
@@ -187,7 +195,12 @@ public class Draw extends JPanel implements MouseMotionListener {
             int x = (x1+x2)/2;
             int y = (y1+y2)/2;
             ((Graphics2D) g).drawString(""+lines.get(i).getPoids(),x,y-10);
-            
+            if (oriente){
+                int[] t = new int[4];
+                fleche(x1,y1,x,y,t);
+                ((Graphics2D) g).drawLine(x,y,t[0],t[1]);
+                ((Graphics2D) g).drawLine(x,y,t[2],t[3]);
+            }
         }
     }
  
@@ -262,7 +275,7 @@ public class Draw extends JPanel implements MouseMotionListener {
         if (n < 0 || n >= numOfCircles) {
             return;
         }
-        // On supprime toutes les lignes qui ?
+        // On supprime toutes les lignes qui sont relié au cercle supprimé
         if(numOfLines > 0){
             for (MyLine l : lines){
                 if (l.getFrom().equals(circ[n]) || l.getTo().equals(circ[n])){
@@ -316,17 +329,39 @@ public class Draw extends JPanel implements MouseMotionListener {
         }    
     }
 
-    public void dijkstra(){
-        for (int i = 0;i<this.numOfLines;i++){
+    public void reinit(){
+        for (int i=0;i<this.numOfLines;i++){
             this.lines.get(i).setC(Color.BLUE);
         }
-        repaint();
-        (new Dijkstra()).dijkstra(this, src, dest);
-        this.dijkstra = false;
+    }
+    public void dijkstra(){
+        boolean chemin = (new Dijkstra()).dijkstra(this, src, dest);
+        if (!chemin){
+            JOptionPane.showMessageDialog(this, "Il n'existe pas de chemin entre ces deux nœuds", "No Path !!", JOptionPane.INFORMATION_MESSAGE);
+        }
         this.src = -1;
         this.dest = -1;
-        System.out.println(dijkstra);
     }
+
+    private void fleche(int x1, int x2, int x3, int x4,int[] tab){
+        int nb = 10;
+        double norme = Math.sqrt(Math.pow((x1-x3),2)+Math.pow((x2-x4),2));
+        double alpha = Math.acos((x3-x1)/norme);
+        if (x4>=x2){
+            double a1 = 3*Math.PI/4 - alpha;
+            tab[0] = (int) Math.round(x3+nb*Math.cos(a1));
+            tab[1] = (int) Math.round(x4-nb*Math.sin(a1));
+            tab[2] = (int) Math.round(x3-nb*Math.sin(a1));
+            tab[3] = (int) Math.round(x4-nb*Math.cos(a1));
+        } else {
+            double a1 = 3*Math.PI/4 + alpha;
+            tab[0] = (int) Math.round(x3+nb*Math.cos(a1));
+            tab[1] = (int) Math.round(x4-nb*Math.sin(a1));
+            tab[2] = (int) Math.round(x3-nb*Math.sin(a1));
+            tab[3] = (int) Math.round(x4-nb*Math.cos(a1));
+        }
+    }
+
     
     /** Classe définissant une ligne */
     public class MyLine {

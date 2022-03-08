@@ -3,7 +3,7 @@ Classe PrimMST définissant l'algorithme de PrimMST
 Sous classe de la classe Traitement
 Auteur : Samy AMAL
 Date de création : 04/02/2022
-Date de dernière modification : 10/02/2022
+Date de dernière modification : 08/03/2022
 =============================================*/
 
 import java.awt.Color;
@@ -25,7 +25,7 @@ public class Dijkstra extends Traitement{
      * @param g Graphe
      * @param s sommet source
      */
-    public void dijkstra(Draw d, int src, int dest){
+    public boolean dijkstra(Draw d, int src, int dest){
 
        GOriente g = new GOriente(d);
         this.dist = new int[g.getNbsommets()]; 
@@ -71,31 +71,41 @@ public class Dijkstra extends Traitement{
                     this.predecesseur[v]= u;
                 }
         }
-        printResult(d,src,dest);
+        return printResult(d,src,dest);
     }
         
     /**
      * Méthode permettant d'afficher le résultat
      * dans l'ordre croissant des distances parcourues
      */
-    public void printResult(Draw d,int src,int dest){
-        System.out.println("Vertex \t\t Distance from Source \t\t Predecesseurs");
-        int s = dest;
-        int p = predecesseur[s];
-        int count = 0;
-        //index dist min and last dist
-        while ((s!=src) && (count<d.getNumOfCircles()) && (p!=-1)){
-            System.out.println(s + " \t\t " + dist[s] + " \t\t\t\t " + p);
-            int ind = d.findLine(p, s);
-            d.getLines().get(ind).setC(Color.RED);
-            s = p;
-            p = predecesseur[p];
-            count++;
-        }
-        d.repaint();
-        if ((count==Graphe.nbmax) || (p==-1)){
+    public boolean printResult(Draw d,int src,int dest){
+        boolean chemin = true;
+        try {
+            System.out.println("Vertex \t\t Distance from Source \t\t Predecesseurs");
+            int s = dest;
+            int p = predecesseur[s];
+            int count = 0;
+            //index dist min and last dist
+            while ((s!=src) && (count<d.getNumOfCircles()) && (p!=-1)){
+                System.out.println(s + " \t\t " + dist[s] + " \t\t\t\t " + p);
+                int ind = d.findLine(p, s);
+                d.getLines().get(ind).setC(Color.RED);
+                s = p;
+                p = predecesseur[p];
+                count++;
+            }
+            if (s!=src){
+                d.reinit();
+                System.out.println("Il n'existe pas de chemin entre ces deux sommets");
+                chemin = false;
+            } 
+            d.repaint();
+            return(chemin);
+        } catch (Exception e){
             System.out.println("Il n'existe pas de chemin entre ces deux sommets");
+            chemin = false;
         }
+        return chemin;
     }
 
     /**
