@@ -57,7 +57,7 @@ public class Draw extends JPanel implements MouseMotionListener {
     public void setCurrentColor(Color c){
         this.currentColor = c;
     }
-    
+
     public ArrayList<MyLine> getLines(){
         return lines;
     }
@@ -304,6 +304,10 @@ public class Draw extends JPanel implements MouseMotionListener {
         public Color getC() {
 			return c;
 		}
+
+        public void setC(Color col){
+            this.c = col;
+        }
 
 		/** 
          * Getter du cercle de départ 

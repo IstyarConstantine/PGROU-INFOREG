@@ -3,8 +3,10 @@ Classe PrimMST définissant l'algorithme de PrimMST
 Sous classe de la classe Traitement
 Auteur : Samy AMAL
 Date de création : 04/02/2022
-Date de dernière modification : 10/02/2022
+Date de dernière modification : 08/03/2022
 =============================================*/
+
+import java.awt.Color;
 
 public class PrimMST extends Traitement {
 
@@ -15,8 +17,9 @@ public class PrimMST extends Traitement {
     
     // Function to construct and print MST for a graph represented
     // using adjacency matrix representation
-    public void primMST(Graphe G) {
+    public void primMST(Draw d) {
         
+        GNonOriente G = new GNonOriente(d);
         this.arbre = new Arc[G.nbsommets];
 
         // To represent set of vertices included in MST
@@ -51,16 +54,20 @@ public class PrimMST extends Traitement {
                 // mstSet[v] is false for vertices not yet included in MST
                 // Update the key only if graph[u][v] is smaller than key[v]
                 if (G.adj[u][v] != 0 && vu[v] == false && G.adj[u][v] < this.arbre[v].getPoids()) {
-                    this.arbre[v] = new Arc(v, u, G.adj[u][v],0);
+                    this.arbre[v] = new Arc(v, u, G.adj[u][v],G.findArc(u,v));
                 }
         }
+        printResult(d);
     }
     
     // Méthode d'affichage des résultats de l'algorithme de Prim
-    public void printResult(){
+    public void printResult(Draw d){
         System.out.println("Edge \tWeight");
         for (int i = 1; i<this.arbre.length; i++){
-            System.out.println(this.arbre[i].getSrc()  + " - " + this.arbre[i].getDest() + "\t" + this.arbre[i].getPoids());
+            int src = this.arbre[i].getSrc();
+            int dest = this.arbre[i].getDest();
+            System.out.println(src + " - " + dest + "\t" + this.arbre[i].getPoids());
+            d.getLines().get(this.arbre[i].getLine()).setC(Color.RED);
         }
     }
 

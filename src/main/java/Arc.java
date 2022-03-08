@@ -27,6 +27,8 @@ public class Arc {
      */
     private int poids;
 
+    private boolean oriente;
+
     /**
      * Constructeur d'un Arc orienté
      * @param s = sommet source de l'Arc
@@ -39,6 +41,14 @@ public class Arc {
         this.dest = d;
         this.poids = p;
         this.setLine(ind);
+    }
+
+    public boolean isOriente() {
+        return oriente;
+    }
+
+    public void setOriente(boolean oriente) {
+        this.oriente = oriente;
     }
 
     public int getLine() {

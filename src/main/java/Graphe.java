@@ -28,11 +28,6 @@ public abstract class Graphe {
      */
     protected int[][] adj;
 
-    /**
-     * Version précédente du graphe, stockée à chaque modifications
-     */
-    protected Graphe version;
-
     protected ArrayList<Noeud> lstNoeuds;
 
     protected ArrayList<Arc> lstArcs;
@@ -85,17 +80,6 @@ public abstract class Graphe {
      * Getter du graphe de version précédente
      * @return un graphe
      */
-    public Graphe getVersion(){
-        return version;
-    }
-
-    /**
-     * Setter du graphe de version précédente
-     * @param version
-     */
-    public void setVersion(Graphe version){
-        this.version = version;
-    }
 
     /**
      * Getter de la matrice d'adjacence du graphe
@@ -166,8 +150,6 @@ public abstract class Graphe {
      */
     public void addSommet(String n,int ind){
         if (this.nbsommets < Graphe.nbmax){
-            /*Sauvegarde du Graphe actuel*/
-            this.version = this.copie();
             /*Ajout du sommet en ajoutant des zéros à adj*/
             for (int i=0;i<=this.nbsommets;i++){
                 this.adj[i][this.nbsommets] = 0;
@@ -213,24 +195,6 @@ public abstract class Graphe {
         this.addArc(a);
     }
 
-    /**
-     * Méthode permettant de revenir à la version précédente
-     * du Graphe à l'aide de son attribut version
-     */
-    public void retourEnArriere(){
-        /*Si la version est null, on ne peut rien faire*/
-        if (version == null){
-            System.out.println("Impossible de revenir en arriere");
-        /*Sinon, on change les attributs du Graphe courant avec ceux
-        du graphe de version*/
-        } else {
-            Graphe prec = this.getVersion();
-            this.adj = prec.getAdj();
-            this.nbsommets = prec.getNbsommets();
-            this.version = prec.getVersion();
-        }
-    }
-
     public void sauvGraph(String sauv){
         try {
             BufferedWriter fichier = new BufferedWriter(new FileWriter(sauv));
@@ -254,43 +218,6 @@ public abstract class Graphe {
         }
     }
 
-    protected void placeArc(Arc a){
-        int i = 0;
-        boolean place = false;
-        int s = a.getSrc();
-        int d = a.getDest();
-        ArrayList<Arc> aux = new ArrayList<Arc>();
-        while ((i<this.lstArcs.size()) && (!place)){
-            Arc arc = this.lstArcs.get(i);
-            int sbis = arc.getSrc();
-            int dbis = arc.getDest();
-            if (sbis < s){
-                aux.add(arc);
-                ++i;
-            } else {
-                if (sbis == s){
-                    if (dbis < d){
-                        aux.add(arc);
-                        ++i;
-                    } else {
-                        aux.add(a);
-                        place = true;
-                    }
-                } else {
-                    aux.add(a);
-                    place = true;
-                }
-            }
-        }
-        if (place){
-            while (i<this.lstArcs.size()){
-                aux.add(this.lstArcs.get(i));
-                ++i;
-            }
-        } else {
-            aux.add(a);
-        }
-        this.lstArcs = aux;
-    }
+    public abstract int findArc(int src, int dest);
 
 }

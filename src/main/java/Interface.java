@@ -222,6 +222,15 @@ public class Interface {
         fileMenu.add(exporter);
         
         JMenuItem prim = new JMenuItem("Prim");
+        prim.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ea) {
+                PrimMST p = new PrimMST();
+                p.primMST(d); 
+                p.printResult(d);
+                d.repaint();
+            }
+        });
         JMenuItem dijkstra = new JMenuItem("Dijkstra");
         JMenuItem finmodif = new JMenuItem("Export Graphe");
         finmodif.addActionListener(new ActionListener() {
