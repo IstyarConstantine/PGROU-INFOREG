@@ -43,6 +43,24 @@ public class InterfaceNO extends Interface {
         }
     };
 
+    public final AbstractAction Kruskal = new AbstractAction(){
+        {
+            putValue(Action.NAME,"Kruskal");
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_K);
+            putValue(Action.SHORT_DESCRIPTION,"Applique l'algorithme de Kruskal pour trouver \n"
+                                            + "l'arbre couvrant minimal du graphe (CTRL+K)");
+            putValue(Action.ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(KeyEvent.VK_K,KeyEvent.CTRL_DOWN_MASK));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e){
+            if (mode==Interface.TRAITEMENT_MODE){
+                //TO DO: implémenter Kruskal à l'aide de la classe Grpah// 
+            }
+        }
+    };
+
     public final AbstractAction ExportGraphNO = new AbstractAction() {
         {
             putValue(Action.NAME,"Export Graphe");
@@ -67,6 +85,8 @@ public class InterfaceNO extends Interface {
     public void addToolBar(){
         toolBarButtons.add(Prim);
         toolBarButtons.addSeparator();
+        toolBarButtons.add(Kruskal);
+        toolBarButtons.addSeparator();
         toolBarButtons.add(ExportGraphNO);
     }
     
@@ -74,6 +94,7 @@ public class InterfaceNO extends Interface {
     public void addMenuBar(){
         JMenu traitMenu = new JMenu("Traitement");
         traitMenu.add(Prim);
+        traitMenu.add(Kruskal);
         traitMenu.add(ExportGraphNO);
         menuBar.add(traitMenu);
     }

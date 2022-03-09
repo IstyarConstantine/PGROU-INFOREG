@@ -27,7 +27,6 @@ public class Accueil {
         oriente.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                //SwingUtilities.invokeLater(new InterfaceO()::createAndShowGui);
                 Draw d = new Draw();
                 d.setOriente(true);
                 SwingUtilities.invokeLater(new InterfaceO(d)::createAndShowGui);
@@ -37,7 +36,6 @@ public class Accueil {
         nonoriente.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                //SwingUtilities.invokeLater(new InterfaceNO()::createAndShowGui);
                 Draw d = new Draw();
                 d.setOriente(false);
                 SwingUtilities.invokeLater(new InterfaceNO(d)::createAndShowGui);

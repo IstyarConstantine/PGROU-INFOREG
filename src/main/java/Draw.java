@@ -23,7 +23,7 @@ public class Draw extends JPanel implements MouseMotionListener {
  
     //Pour les Nœuds :
     /** Rayon des cercles représentant les Nœuds */
-    private static final int circleW = 15;
+    private static final int circleW = 20;
     /** Nombre maximum de nœuds d'un graphe, défini dans la classe Graphe */
     private static final int MAX = Graphe.nbmax;
     /** Liste des cerlces représentant les Nœuds*/

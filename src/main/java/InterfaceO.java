@@ -41,6 +41,24 @@ public class InterfaceO extends Interface {
         }
     };
 
+    public final AbstractAction FordFulkerson = new AbstractAction() {
+        {
+            putValue(Action.NAME,"Ford Fulkerson");
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_F);
+            putValue(Action.SHORT_DESCRIPTION,"Applique l'algorithme de Ford Fulkerson pour calculer \n"
+                                            + "le flot maximal entre 2 sommets \n"
+                                            + "-Cliquez sur le nœud source \n"
+                                            + "-Cliquez sur le nœud de sortie \n"
+                                            + "(CTRL+F)");
+            putValue(Action.ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(KeyEvent.VK_F,KeyEvent.CTRL_DOWN_MASK));
+        }
+        @Override
+            public void actionPerformed(ActionEvent ea) {
+                //TO DO: implémenter Ford Fulkerson à partir de la classe MaxFlow //
+            }
+    };
+
     public final AbstractAction ExportGraphO = new AbstractAction() {
         {
             putValue(Action.NAME,"Export Graphe");
@@ -65,6 +83,8 @@ public class InterfaceO extends Interface {
     public void addToolBar(){
         toolBarButtons.add(Dijkstra);
         toolBarButtons.addSeparator();
+        toolBarButtons.add(FordFulkerson);
+        toolBarButtons.addSeparator();
         toolBarButtons.add(ExportGraphO);
     }
     
@@ -72,6 +92,7 @@ public class InterfaceO extends Interface {
     public void addMenuBar(){
         JMenu traitMenu = new JMenu("Traitement");
         traitMenu.add(Dijkstra);
+        traitMenu.add(FordFulkerson);
         traitMenu.add(ExportGraphO);
         menuBar.add(traitMenu);
     }
