@@ -88,12 +88,15 @@ public abstract class Interface{
     public static final int PRIM_TRAITEMENT = 21;
     public static final int DIJKSTRA_TRAITEMENT = 22;
 
+    public Interface(Draw d){
+        this.d = d;
+    }
+
     public void createAndShowGui() {
-        
-        this.d = new Draw();
+
         frame = new JFrame("INFOREG");
         //fermer la fenêtre quand on quitte
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         
         initToolBar();  
@@ -114,7 +117,7 @@ public abstract class Interface{
         frame.pack();
         
         frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        //frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             
 
     }

@@ -14,6 +14,10 @@ import javax.swing.JMenu;
 
 public class InterfaceO extends Interface {
 
+    public InterfaceO(Draw d){
+        super(d);
+    }
+
     /** Actions */
 
     public final AbstractAction Dijkstra = new AbstractAction(){
@@ -66,7 +70,6 @@ public class InterfaceO extends Interface {
     
     @Override
     public void addMenuBar(){
-        this.d.setOriente(true);
         JMenu traitMenu = new JMenu("Traitement");
         traitMenu.add(Dijkstra);
         traitMenu.add(ExportGraphO);

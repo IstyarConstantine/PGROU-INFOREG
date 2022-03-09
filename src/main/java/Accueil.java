@@ -19,7 +19,7 @@ public class Accueil {
     public static void main(String[] args) {
         JFrame J = new JFrame("INFOREG");
         J.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        J.setSize(200,100);
+        J.setSize(200,200);
         J.setLocationRelativeTo(null);
         JPanel contentPane = (JPanel) J.getContentPane();
         contentPane.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
@@ -27,18 +27,32 @@ public class Accueil {
         oriente.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                SwingUtilities.invokeLater(new InterfaceO()::createAndShowGui);
+                //SwingUtilities.invokeLater(new InterfaceO()::createAndShowGui);
+                Draw d = new Draw();
+                d.setOriente(true);
+                SwingUtilities.invokeLater(new InterfaceO(d)::createAndShowGui);
             }
         });
         JButton nonoriente = new JButton("Graphe non orienté");
         nonoriente.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                SwingUtilities.invokeLater(new InterfaceNO()::createAndShowGui);
+                //SwingUtilities.invokeLater(new InterfaceNO()::createAndShowGui);
+                Draw d = new Draw();
+                d.setOriente(false);
+                SwingUtilities.invokeLater(new InterfaceNO(d)::createAndShowGui);
+            }
+        });
+        JButton charge = new JButton("Charger un Graphe existant");
+        charge.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                //TO DO: Méthode de charge de graphe//
             }
         });
         contentPane.add(oriente);
         contentPane.add(nonoriente);
+        contentPane.add(charge);
         J.setVisible(true);
         
         //SwingUtilities.invokeLater(new Interface()::createAndShowGui);

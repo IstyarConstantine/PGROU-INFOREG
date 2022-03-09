@@ -15,6 +15,10 @@ import javax.swing.JMenu;
 
 
 public class InterfaceNO extends Interface {
+
+    public InterfaceNO(Draw d){
+        super(d);
+    }
     
     /** Actions */
 
