@@ -5,7 +5,7 @@ Date de création : 04/03/2022
 Date de dernière modification : 06/03/2022
 =============================================*/
 
-import javax.swing.*;
+/*import javax.swing.*;
 import java.awt.event.*;
 
 public class LabelInput extends JFrame {
@@ -59,4 +59,4 @@ public class LabelInput extends JFrame {
             }
         }
     }
-}
+}*/

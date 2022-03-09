@@ -96,12 +96,13 @@ public class Draw extends JPanel implements MouseMotionListener {
                     // Si on souhaite ajouter un label à un Nœud :
                     if (Interface.activeTool==Interface.LABEL_TOOL) {
                         if (currentCircleIndex >= 0){ // inside a circle
-                            //ERREUR SI ON CANCEL
-                            String lbl = JOptionPane.showInputDialog("Entrer label :");
-                            //System.out.println(lbl);
-                            //lbl.closeLbl();
-                            circLbl[currentCircleIndex] = lbl;
-                            repaint();
+                            try {
+                                String lbl = JOptionPane.showInputDialog("Entrer label :");
+                                circLbl[currentCircleIndex] = lbl;
+                                repaint();
+                            } catch (Exception NullPointerException){
+                                System.out.println("Opération annulée");
+                            }
                         }   
                     }
                     if (Interface.activeTool==Interface.ARC_TOOL) {

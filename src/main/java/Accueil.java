@@ -17,7 +17,7 @@ import javax.swing.SwingUtilities;
 public class Accueil {  
 
     public static void main(String[] args) {
-        JFrame J = new JFrame("Choix");
+        JFrame J = new JFrame("INFOREG");
         J.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         J.setSize(200,100);
         J.setLocationRelativeTo(null);
