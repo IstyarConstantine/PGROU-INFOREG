@@ -252,6 +252,8 @@ public abstract class Interface{
                 if (ae.getSource()==edition) {
                     mode = EDITION_MODE;
                 } else if (ae.getSource()==traitement) {
+                    d.reinit();
+                    d.repaint();
                     mode = TRAITEMENT_MODE;
                 }
             }
