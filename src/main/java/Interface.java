@@ -189,7 +189,7 @@ public abstract class Interface{
         };
         strokeSize.addChangeListener(strokeListener);
         strokeSize.setMaximumSize(strokeSize.getPreferredSize());
-        JLabel strokeLabel = new JLabel(" Zoom");
+        JLabel strokeLabel = new JLabel(" Taille");
         strokeLabel.setLabelFor(strokeSize);
 
         toolBarButtons.add(strokeLabel);
