@@ -118,7 +118,7 @@ public abstract class Interface{
         frame.add(toolBarButtons, BorderLayout.LINE_START);
         //BorderLayout.CENTER permet de fixer le JPanel au centre
         frame.add(paneImage,BorderLayout.CENTER);
-        this.colorBg = paneImage.getBackground();
+        Interface.colorBg = paneImage.getBackground();
         frame.setJMenuBar(menuBar);
         
         frame.getContentPane().add(this.d);

@@ -23,8 +23,10 @@ import javax.swing.JPanel;
 public class Draw extends JPanel implements MouseMotionListener {
  
     //Pour les Nœuds :
-    /** Rayon des cercles représentant les Nœuds */
-    private static double circleW = 15;
+    /** Rayon intial des cercles représentants les Nœuds */
+    private static final double RINIT = 15;
+    /** Rayon des cercles représentant les Nœuds, initialisé au rayon initial */
+    private static double circleW = Draw.RINIT;
     /** Nombre maximum de nœuds d'un graphe, défini dans la classe Graphe */
     private static final int MAX = Graphe.nbmax;
     /** Liste des cerlces représentant les Nœuds*/
@@ -52,8 +54,10 @@ public class Draw extends JPanel implements MouseMotionListener {
     private int numOfLines = 0;
     /** Arc courant */
     private int currentArcIndex = -1;
+    /** Initial Line width */
+    private static final float LINIT = 2;
     /** Line width. */
-    private float lineWidth = 1;
+    private float lineWidth = Draw.LINIT;
     
 
     public int getNumOfCircles() {
@@ -519,8 +523,8 @@ public class Draw extends JPanel implements MouseMotionListener {
     public void tailleCirc(){
         if(numOfCircles>0){
             double factor = (float) Interface.taille/20;
-            circleW = factor*15 ;
-            lineWidth = (float) factor;
+            circleW = factor*Draw.RINIT ;
+            lineWidth = (float) factor*Draw.LINIT;
             for (int i = 0; i < numOfCircles; i++) {
                 circ[i].height = circleW ;
                 circ[i].width = circleW ;
