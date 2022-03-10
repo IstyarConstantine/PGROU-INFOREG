@@ -33,8 +33,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JToolBar;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public abstract class Interface{
 
@@ -71,6 +75,7 @@ public abstract class Interface{
     protected Color color = Color.WHITE;
     protected BufferedImage colorSample = new BufferedImage(16,16,BufferedImage.TYPE_INT_RGB);
     protected Rectangle selection;
+    protected static Color colorBg ;
     
     protected RenderingHints renderingHints;
     protected JLabel imageLabel;
@@ -87,6 +92,9 @@ public abstract class Interface{
     protected static int activeTraitement;
     public static final int PRIM_TRAITEMENT = 21;
     public static final int DIJKSTRA_TRAITEMENT = 22;
+    
+    /** Attribut pour la taille des Noeuds. */
+    protected static int taille ;
 
     public Interface(Draw d){
         this.d = d;
@@ -110,6 +118,7 @@ public abstract class Interface{
         frame.add(toolBarButtons, BorderLayout.LINE_START);
         //BorderLayout.CENTER permet de fixer le JPanel au centre
         frame.add(paneImage,BorderLayout.CENTER);
+        this.colorBg = paneImage.getBackground();
         frame.setJMenuBar(menuBar);
         
         frame.getContentPane().add(this.d);
@@ -167,6 +176,30 @@ public abstract class Interface{
         
         //ajoute un séparateur de taille par défaut
         toolBarButtons.addSeparator();
+        
+        //Taille
+        final SpinnerNumberModel strokeModel = new SpinnerNumberModel(20,1,100,1);
+        JSpinner strokeSize = new JSpinner(strokeModel);
+        ChangeListener strokeListener = new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent arg0) {
+                Object o = strokeModel.getValue();
+                Integer i = (Integer)o; 
+                taille = i;
+                d.tailleCirc();
+                } 
+        };
+        strokeSize.addChangeListener(strokeListener);
+        strokeSize.setMaximumSize(strokeSize.getPreferredSize());
+        JLabel strokeLabel = new JLabel(" Zoom");
+        strokeLabel.setLabelFor(strokeSize);
+
+        toolBarButtons.add(strokeLabel);
+        toolBarButtons.add(strokeSize);
+        
+        //ajoute un séparateur de taille par défaut
+        toolBarButtons.addSeparator();
+        
         
         JLabel l1 = new JLabel("  Édition");
         JLabel l2 = new JLabel("  Mode");

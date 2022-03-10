@@ -6,6 +6,7 @@ Date de création : 03/03/2022
 Date de dernière modification : 08/03/2022
 =============================================*/
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
@@ -23,7 +24,7 @@ public class Draw extends JPanel implements MouseMotionListener {
  
     //Pour les Nœuds :
     /** Rayon des cercles représentant les Nœuds */
-    private static final int circleW = 20;
+    private static double circleW = 15;
     /** Nombre maximum de nœuds d'un graphe, défini dans la classe Graphe */
     private static final int MAX = Graphe.nbmax;
     /** Liste des cerlces représentant les Nœuds*/
@@ -51,6 +52,9 @@ public class Draw extends JPanel implements MouseMotionListener {
     private int numOfLines = 0;
     /** Arc courant */
     private int currentArcIndex = -1;
+    /** Line width. */
+    private float lineWidth = 1;
+    
 
     public int getNumOfCircles() {
 		return numOfCircles;
@@ -193,16 +197,7 @@ public class Draw extends JPanel implements MouseMotionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (int i = 0; i < numOfCircles; i++) {
-            //((Graphics2D) g).setPaint(Color.BLACK);
-            ((Graphics2D) g).draw(circ[i]); 
-            //((Graphics2D) g).setPaint(Color.WHITE);
-            //((Graphics2D) g).fill(circ[i]);
-            ((Graphics2D) g).setPaint(Color.BLACK);
-            ((Graphics2D) g).drawString(circLbl[i],
-                    (int) circ[i].getCenterX(),
-                    (int) circ[i].getCenterY() + 20);
-        }
+        //order : draw line puis draw circles
         for (int i = 0 ; i < numOfLines; i++){
             ((Graphics2D) g).setPaint(lines.get(i).getC());
             int x1 = lines.get(i).getFromPoint().x;
@@ -211,9 +206,12 @@ public class Draw extends JPanel implements MouseMotionListener {
             int y2 = lines.get(i).getToPoint().y;
             int x3 = lines.get(i).getClouPoint().x;
             int y3 = lines.get(i).getClouPoint().y;
+            ((Graphics2D) g).setStroke(new BasicStroke(lineWidth));
             ((Graphics2D) g).drawLine(x1,y1,x3,y3);
             ((Graphics2D) g).drawLine(x3,y3,x2,y2);
+            ((Graphics2D) g).setPaint(Interface.colorBg); //clous set color background
             ((Graphics2D) g).draw(lines.get(i).getClou());
+            ((Graphics2D) g).setPaint(lines.get(i).getC()); //reset color pour poids
             ((Graphics2D) g).drawString(""+lines.get(i).getPoids(),x3,y3-10);
             if (oriente){
                 int[] t = new int[4];
@@ -223,6 +221,16 @@ public class Draw extends JPanel implements MouseMotionListener {
                 ((Graphics2D) g).drawLine(x4,y4,t[0],t[1]);
                 ((Graphics2D) g).drawLine(x4,y4,t[2],t[3]);
             }
+        }
+        for (int i = 0; i < numOfCircles; i++) {
+            ((Graphics2D) g).setPaint(Color.BLACK);
+            ((Graphics2D) g).draw(circ[i]); 
+            ((Graphics2D) g).setPaint(Color.WHITE);
+            ((Graphics2D) g).fill(circ[i]);
+            ((Graphics2D) g).setPaint(Color.BLACK);
+            ((Graphics2D) g).drawString(circLbl[i],
+                    (int) circ[i].getCenterX(),
+                    (int) circ[i].getCenterY() + 20);
         }
     }
  
@@ -361,7 +369,8 @@ public class Draw extends JPanel implements MouseMotionListener {
                 circ[currentCircleIndex].y = y;
                 repaint();
             }
-        } else if (Interface.activeTool==Interface.ARC_TOOL && Interface.mode==Interface.EDITION_MODE) {
+        } 
+        if ((Interface.activeTool==Interface.ARC_TOOL || Interface.activeTool==Interface.SELECT_TOOL)&& Interface.mode==Interface.EDITION_MODE) {
             int x = event.getX();
             int y = event.getY();
             if (currentArcIndex >= 0) {
@@ -502,6 +511,22 @@ public class Draw extends JPanel implements MouseMotionListener {
             this.clou = nouv;
         }
 
+    }
+    
+    /** 
+     * Méthode permettant de modifier la taille des cercles et la linewidth des arcs
+     */
+    public void tailleCirc(){
+        if(numOfCircles>0){
+            double factor = (float) Interface.taille/20;
+            circleW = factor*15 ;
+            lineWidth = (float) factor;
+            for (int i = 0; i < numOfCircles; i++) {
+                circ[i].height = circleW ;
+                circ[i].width = circleW ;
+            }
+            repaint();
+        }
     }
 
 }
