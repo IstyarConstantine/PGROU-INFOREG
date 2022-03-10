@@ -147,8 +147,6 @@ public abstract class Interface{
         label = new JRadioButton("Label");
         edition = new JRadioButton("Édition");
         traitement = new JRadioButton("Traitement");
-        save = new JButton("SAUVEGARDER");
-        load = new JButton("CHARGER");
         
         //ajoute un séparateur de taille par défaut
         toolBarButtons.addSeparator();
