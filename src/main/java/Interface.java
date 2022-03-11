@@ -14,10 +14,13 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -35,6 +38,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
@@ -96,6 +100,51 @@ public abstract class Interface{
     /** Attribut pour la taille des Noeuds. */
     protected static int taille ;
 
+        /** Actions */
+
+    public final AbstractAction Save = new AbstractAction(){
+        {
+            putValue(Action.NAME,"Enregistrer");
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
+            putValue(Action.SHORT_DESCRIPTION,"Sauvegarde le graphe actuel (CTRL+S)");
+            putValue(Action.ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(KeyEvent.VK_S,KeyEvent.CTRL_DOWN_MASK));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e){
+            if (d.getNomSauvegarde()!=null){
+                (new SauvDraw(d.getNomSauvegarde())).sauvegarderDraw(d);
+            } else {
+                try {
+                    String lbl = JOptionPane.showInputDialog("Entrer nom sauvegarde :");
+                    d.setNomSauvegarde(lbl + ".inforeg");
+                    (new SauvDraw(d.getNomSauvegarde())).sauvegarderDraw(d);
+                } catch (Exception NullPointerException){
+                    System.out.println("Opération annulée");
+                }
+            }
+        };
+    };
+
+    public final AbstractAction SaveAs = new AbstractAction(){
+        {
+            putValue(Action.NAME,"Enregistrer Sous");
+            putValue(Action.SHORT_DESCRIPTION,"Sauvegarde le graphe actuel");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e){
+            try {
+                String lbl = JOptionPane.showInputDialog("Entrer nom sauvegarde :");
+                d.setNomSauvegarde(lbl + ".inforeg");
+                (new SauvDraw(d.getNomSauvegarde())).sauvegarderDraw(d);
+            } catch (Exception NullPointerException){
+                System.out.println("Opération annulée");
+            }
+        };
+    };
+
     public Interface(Draw d){
         this.d = d;
     }
@@ -122,6 +171,7 @@ public abstract class Interface{
         frame.setJMenuBar(menuBar);
         
         frame.getContentPane().add(this.d);
+        this.d.repaint();
         
         frame.pack();
         
@@ -278,8 +328,8 @@ public abstract class Interface{
         JMenu fileMenu = new JMenu("Fichier");
         //Sub Menus de Fichier
         JMenuItem ouvrir = new JMenuItem("Ouvrir");
-        JMenuItem enregistrer = new JMenuItem("Enregistrer");
-        JMenuItem enregistrerSous = new JMenuItem("EnregistrerSous");
+        //JMenuItem enregistrer = new JMenuItem("Enregistrer");
+        //JMenuItem enregistrerSous = new JMenuItem("EnregistrerSous");
         JMenu exporter = new JMenu("Exporter");
         
         JMenuItem exportLatex = new JMenuItem("Exporter au format LaTeX");
@@ -294,8 +344,10 @@ public abstract class Interface{
         
         fileMenu.add(ouvrir);
         fileMenu.addSeparator();
-        fileMenu.add(enregistrer);
-        fileMenu.add(enregistrerSous);
+        fileMenu.add(Save);
+        fileMenu.add(SaveAs);
+        //fileMenu.add(enregistrer);
+        //fileMenu.add(enregistrerSous);
         fileMenu.addSeparator();
         fileMenu.add(exporter);
         

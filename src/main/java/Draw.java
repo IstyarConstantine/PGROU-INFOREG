@@ -1,6 +1,5 @@
 /*=============================================
 Classe Draw permettant de dessiner les noeuds et arcs
-Sous classe de la classe Traitement
 Auteur : Samy AMAL
 Date de création : 03/03/2022
 Date de dernière modification : 08/03/2022
@@ -11,12 +10,12 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.geom.Ellipse2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
  
@@ -28,7 +27,7 @@ public class Draw extends JPanel implements MouseMotionListener {
     /** Rayon des cercles représentant les Nœuds, initialisé au rayon initial */
     private static double circleW = Draw.RINIT;
     /** Nombre maximum de nœuds d'un graphe, défini dans la classe Graphe */
-    private static final int MAX = Graphe.nbmax;
+    public static final int MAX = Graphe.nbmax;
     /** Liste des cerlces représentant les Nœuds*/
     private Ellipse2D.Double[] circ = new Ellipse2D.Double[MAX];
     /** Liste des labels */
@@ -43,7 +42,10 @@ public class Draw extends JPanel implements MouseMotionListener {
 
     private int src = -1;
     private int dest = -1;
-    private boolean oriente;
+    private int oriente = -1;
+    public static final int ORIENTE = 0;
+    public static final int NONORIENTE = 1;
+    private String nomSauvegarde;
     
     //Pour les Arcs :
     /** Dernier Nœud sur lequel on a passé la souris */
@@ -58,17 +60,40 @@ public class Draw extends JPanel implements MouseMotionListener {
     private static final float LINIT = 2;
     /** Line width. */
     private float lineWidth = Draw.LINIT;
-    
+
+    public float getLineWidth(){
+        return this.lineWidth;
+    }
+
+    public void setLineWidth(float w){
+        this.lineWidth = w;
+    }
+
+    public double getCircleW(){
+        return Draw.circleW;
+    }
+
+    public void setCircleW(double r){
+        Draw.circleW = r;
+    }
 
     public int getNumOfCircles() {
 		return numOfCircles;
 	}
 
-    public boolean isOriente() {
+    public String getNomSauvegarde() {
+        return nomSauvegarde;
+    }
+
+    public void setNomSauvegarde(String nomSauvegarde) {
+        this.nomSauvegarde = nomSauvegarde;
+    }
+
+    public int getOriente() {
         return oriente;
     }
 
-    public void setOriente(boolean oriente) {
+    public void setOriente(int oriente) {
         this.oriente = oriente;
     }
 
@@ -87,7 +112,10 @@ public class Draw extends JPanel implements MouseMotionListener {
     public String[] getCircLbl(){
         return circLbl;
     }
-      
+ 
+    public Ellipse2D.Double[] getCirc(){
+        return this.circ;
+    }
     public Draw() {
         addMouseListener(new MouseAdapter() {
             @Override
@@ -147,7 +175,7 @@ public class Draw extends JPanel implements MouseMotionListener {
                             String text = JOptionPane.showInputDialog("Entrer le poids de l'Arc (seuls les entiers seront acceptés):");
                             try {
                                 int pds = Integer.parseInt(text);
-                                addLine(new MyLine(fromPoint, p,pds));
+                                addLine(new MyLine(fromPoint, p,pds,currentColor));
                                 repaint();
                                 //fromPoint = null;
                             } catch (Exception e) {
@@ -217,7 +245,7 @@ public class Draw extends JPanel implements MouseMotionListener {
             ((Graphics2D) g).draw(lines.get(i).getClou());
             ((Graphics2D) g).setPaint(lines.get(i).getC()); //reset color pour poids
             ((Graphics2D) g).drawString(""+lines.get(i).getPoids(),x3,y3-10);
-            if (oriente){
+            if (oriente==Draw.ORIENTE){
                 int[] t = new int[4];
                 int x4 = (x3+x2)/2;
                 int y4 = (y3+y2)/2;
@@ -415,106 +443,6 @@ public class Draw extends JPanel implements MouseMotionListener {
             tab[2] = (int) Math.round(x3-nb*Math.sin(a1));
             tab[3] = (int) Math.round(x4-nb*Math.cos(a1));
         }
-    }
-
-    
-    /** Classe définissant une ligne */
-    public class MyLine {
-        /** Cercle/Nœud de départ */
-        private final Ellipse2D.Double from;
-        /** Cercle/Nœeud d'arrivée */
-        private final Ellipse2D.Double  to;
-        /** Poids de l'Arc */
-        private int poids;
-        /** Couleur */
-        private Color c;
-        /** Clou */
-        private Ellipse2D.Double clou;
-
-        /** 
-         * Constructeur
-         * @param fromPoint = cercle de départ
-         * @param toPoint = cercle d'arrivée
-         */
-        public MyLine(Ellipse2D.Double fromPoint, Ellipse2D.Double toPoint, int pds) {
-            this.from = fromPoint;
-            this.to = toPoint;
-            this.poids = pds;
-            this.c = currentColor;
-            int x = (this.getToPoint().x + this.getFromPoint().x)/2;
-            int y = (this.getToPoint().y + this.getFromPoint().y)/2;
-            this.clou = new Ellipse2D.Double(x,y,10,10);
-        }
-
-        public Ellipse2D.Double getClou(){
-            return this.clou;
-        }
-
-        public int getPoids(){
-            return poids;
-        }
-
-        public void setPoids(int p){
-            this.poids = p;
-        }
-        
-        public Color getC() {
-			return c;
-		}
-
-        public void setC(Color col){
-            this.c = col;
-        }
-
-		/** 
-         * Getter du cercle de départ 
-         * @return from (attribut)
-         */
-        public Ellipse2D.Double getFrom() {
-            return this.from;
-        }
-        
-        /** 
-         * Getter du cercle d'arrivée 
-         * @return to (attribut)
-         */
-        public Ellipse2D.Double getTo() {
-            return this.to;
-        }
-
-        /** 
-         * Getter des coordonnées du centre du cercle de départ
-         * @return p = un Point
-         */
-        public Point getFromPoint() {
-            double centerX = this.from.getCenterX();
-            double centerY = this.from.getCenterY();
-            Point p = new Point((int)centerX, (int)centerY);
-            return p;
-        }
-
-        /** 
-         * Getter des coordonnées du centre du cercle d'arrivée
-         * @return p = un Point
-         */
-        public Point getToPoint() {
-            double centerX = this.to.getCenterX();
-            double centerY = this.to.getCenterY();
-            Point p = new Point((int)centerX, (int)centerY);
-            return p;
-        }
-
-        public Point getClouPoint() {
-            double centerX = this.clou.getCenterX();
-            double centerY = this.clou.getCenterY();
-            Point p = new Point((int)centerX, (int)centerY);
-            return p;
-        }
-
-        public void setClou(Ellipse2D.Double nouv){
-            this.clou = nouv;
-        }
-
     }
     
     /** 

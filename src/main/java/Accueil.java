@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -28,7 +29,7 @@ public class Accueil {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Draw d = new Draw();
-                d.setOriente(true);
+                d.setOriente(Draw.ORIENTE);
                 SwingUtilities.invokeLater(new InterfaceO(d)::createAndShowGui);
             }
         });
@@ -37,7 +38,7 @@ public class Accueil {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Draw d = new Draw();
-                d.setOriente(false);
+                d.setOriente(Draw.NONORIENTE);
                 SwingUtilities.invokeLater(new InterfaceNO(d)::createAndShowGui);
             }
         });
@@ -45,7 +46,23 @@ public class Accueil {
         charge.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                //TO DO: Méthode de charge de graphe//
+                try {
+                    String lbl = JOptionPane.showInputDialog("Entrer le nom du fichier à charger :");
+                    Draw d = (new ChargeDraw(lbl)).chargerDraw();
+                    switch (d.getOriente()){
+                        case Draw.ORIENTE:
+                            SwingUtilities.invokeLater(new InterfaceO(d)::createAndShowGui);
+                            break;
+                        case Draw.NONORIENTE:
+                            SwingUtilities.invokeLater(new InterfaceNO(d)::createAndShowGui);
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(null, "Sauvegarde inexistante", "No Save !!", JOptionPane.INFORMATION_MESSAGE);
+                            break;
+                    }
+                } catch (Exception NullPointerException){
+                    JOptionPane.showMessageDialog(null, "Sauvegarde inexistante", "No Save !!", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
         contentPane.add(oriente);

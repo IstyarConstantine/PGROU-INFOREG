@@ -50,9 +50,9 @@ public abstract class Graphe {
         for (int i=0;i<d.getNumOfCircles();i++){
             addSommet(d.getCircLbl()[i],i);
         }
-        ArrayList<Draw.MyLine> lines = d.getLines();
+        ArrayList<MyLine> lines = d.getLines();
         for (int i=0;i<d.getNumOfLines();i++){
-            Draw.MyLine l = lines.get(i);
+            MyLine l = lines.get(i);
             int p = l.getPoids();
             int src = d.getRec(l.getFromPoint().x,l.getFromPoint().y);
             int dest = d.getRec(l.getToPoint().x,l.getToPoint().y);
