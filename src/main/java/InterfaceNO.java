@@ -12,6 +12,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.KeyStroke;
 import javax.swing.JMenu;
+import javax.swing.JOptionPane;
 
 
 public class InterfaceNO extends Interface {
@@ -38,7 +39,10 @@ public class InterfaceNO extends Interface {
                 activeTraitement = Interface.PRIM_TRAITEMENT;
                 d.reinit();
                 d.repaint();
-                (new PrimMST()).primMST(d);
+                boolean v = (new PrimMST()).primMST(d);
+                if (!v){
+                    JOptionPane.showMessageDialog(d, "Le graphe n'est pas connexe, impossible de déterminer l'ACM.", "Graphe Non Connexe !", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         }
     };
@@ -56,9 +60,30 @@ public class InterfaceNO extends Interface {
         @Override
         public void actionPerformed(ActionEvent e){
             if (mode==Interface.TRAITEMENT_MODE){
-                //TO DO: implémenter Kruskal à l'aide de la classe Grpah// 
+                //TO DO: implémenter Kruskal à l'aide de la classe Graph// 
             }
         }
+    };
+
+    public final AbstractAction ConnexiteNO = new AbstractAction() {
+        {
+            putValue(Action.NAME,"Connexité");
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_L);
+            putValue(Action.SHORT_DESCRIPTION,"Vérifie si le graphe est connexe \n"
+                                            + "(CTRL+L)");
+            putValue(Action.ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_DOWN_MASK));
+        }
+        @Override
+            public void actionPerformed(ActionEvent ea) {
+                if (mode==Interface.TRAITEMENT_MODE){
+                    if (Connexe.connexe(new GNonOriente(d))){
+                        JOptionPane.showMessageDialog(d, "Le graphe est connexe.", "Connexité", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(d, "Le graphe n'est pas connexe.", "Connexité", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
     };
 
     public final AbstractAction ExportGraphNO = new AbstractAction() {
@@ -71,9 +96,11 @@ public class InterfaceNO extends Interface {
         }
         @Override
             public void actionPerformed(ActionEvent ea) {
-                System.out.println(d.getNumOfCircles());
-                GNonOriente g = new GNonOriente(d);
-                g.afficher();
+                if (mode==Interface.TRAITEMENT_MODE){
+                    System.out.println(d.getNumOfCircles());
+                    GNonOriente g = new GNonOriente(d);
+                    g.afficher();
+                }
             }
     };
     
@@ -87,6 +114,8 @@ public class InterfaceNO extends Interface {
         toolBarButtons.addSeparator();
         toolBarButtons.add(Kruskal);
         toolBarButtons.addSeparator();
+        toolBarButtons.add(ConnexiteNO);
+        toolBarButtons.addSeparator();
         toolBarButtons.add(ExportGraphNO);
     }
     
@@ -96,6 +125,7 @@ public class InterfaceNO extends Interface {
         traitMenu.add(Prim);
         traitMenu.add(Kruskal);
         traitMenu.add(ExportGraphNO);
+        traitMenu.add(ConnexiteNO);
         menuBar.add(traitMenu);
     }
 }

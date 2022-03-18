@@ -41,6 +41,10 @@ public class ChargeDraw {
             int nA = Integer.parseInt(tokenizer.nextToken());
             d.setCircleW((double) Integer.parseInt(tokenizer.nextToken()));
             d.setLineWidth((float) Integer.parseInt(tokenizer.nextToken()));
+            int b = Integer.parseInt(tokenizer.nextToken());
+            if (b==0){
+                d.setPondere(false);
+            }
             for (int j=0;j<nC;j++){
                 addCircle(fichier.readLine(),j);
             }

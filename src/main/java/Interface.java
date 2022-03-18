@@ -113,12 +113,13 @@ public abstract class Interface{
 
         @Override
         public void actionPerformed(ActionEvent e){
-            if (d.getNomSauvegarde()!=null){
+            if (d.getNomSauvegarde()!=" "){
                 (new SauvDraw(d.getNomSauvegarde())).sauvegarderDraw(d);
             } else {
                 try {
                     String lbl = JOptionPane.showInputDialog("Entrer nom sauvegarde :");
                     d.setNomSauvegarde(lbl + ".inforeg");
+                    frame.setName("INFOREG " + d.getNomSauvegarde());
                     (new SauvDraw(d.getNomSauvegarde())).sauvegarderDraw(d);
                 } catch (Exception NullPointerException){
                     System.out.println("Opération annulée");
@@ -138,6 +139,7 @@ public abstract class Interface{
             try {
                 String lbl = JOptionPane.showInputDialog("Entrer nom sauvegarde :");
                 d.setNomSauvegarde(lbl + ".inforeg");
+                frame.setName("INFOREG " + d.getNomSauvegarde());
                 (new SauvDraw(d.getNomSauvegarde())).sauvegarderDraw(d);
             } catch (Exception NullPointerException){
                 System.out.println("Opération annulée");
@@ -151,7 +153,7 @@ public abstract class Interface{
 
     public void createAndShowGui() {
 
-        frame = new JFrame("INFOREG");
+        frame = new JFrame("INFOREG "+d.getNomSauvegarde());
         //fermer la fenêtre quand on quitte
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);

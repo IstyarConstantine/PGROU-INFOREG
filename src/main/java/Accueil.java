@@ -24,8 +24,8 @@ public class Accueil {
         J.setLocationRelativeTo(null);
         JPanel contentPane = (JPanel) J.getContentPane();
         contentPane.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-        JButton oriente = new JButton("Graphe Orienté");
-        oriente.addActionListener(new ActionListener() {
+        JButton orientepond = new JButton("Graphe Orienté Pondéré");
+        orientepond.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Draw d = new Draw();
@@ -33,12 +33,32 @@ public class Accueil {
                 SwingUtilities.invokeLater(new InterfaceO(d)::createAndShowGui);
             }
         });
-        JButton nonoriente = new JButton("Graphe non orienté");
+        JButton nonorientepond = new JButton("Graphe Non Orienté Pondéré");
+        nonorientepond.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Draw d = new Draw();
+                d.setOriente(Draw.NONORIENTE);
+                SwingUtilities.invokeLater(new InterfaceNO(d)::createAndShowGui);
+            }
+        });
+        JButton oriente = new JButton("Graphe Orienté");
+        oriente.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Draw d = new Draw();
+                d.setOriente(Draw.ORIENTE);
+                d.setPondere(false);
+                SwingUtilities.invokeLater(new InterfaceO(d)::createAndShowGui);
+            }
+        });
+        JButton nonoriente = new JButton("Graphe Non Orienté");
         nonoriente.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 Draw d = new Draw();
                 d.setOriente(Draw.NONORIENTE);
+                d.setPondere(false);
                 SwingUtilities.invokeLater(new InterfaceNO(d)::createAndShowGui);
             }
         });
@@ -65,7 +85,9 @@ public class Accueil {
                 }
             }
         });
+        contentPane.add(orientepond);
         contentPane.add(oriente);
+        contentPane.add(nonorientepond);
         contentPane.add(nonoriente);
         contentPane.add(charge);
         J.setVisible(true);

@@ -26,11 +26,16 @@ public class SauvDraw{
     public void sauvegarderDraw(Draw d){
         try {
             fichier = new BufferedWriter(new FileWriter(this.source));
+            int b = 0;
+            if (d.getPondere()){
+                b = 1;
+            }
             fichier.write(String.valueOf(d.getOriente())
                             + del + String.valueOf(d.getNumOfCircles())
                             + del + String.valueOf(d.getNumOfLines())
                             + del + String.valueOf(Math.round(d.getCircleW()))
-                            + del + String.valueOf(Math.round(d.getLineWidth())));
+                            + del + String.valueOf(Math.round(d.getLineWidth()))
+                            + del + String.valueOf(b));
             for (int i=0;i<d.getNumOfCircles();i++){
                 fichier.newLine();
                 fichier.write((int) d.getCirc()[i].x 

@@ -11,6 +11,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.KeyStroke;
 import javax.swing.JMenu;
+import javax.swing.JOptionPane;
 
 public class InterfaceO extends Interface {
 
@@ -35,9 +36,11 @@ public class InterfaceO extends Interface {
 
         @Override
         public void actionPerformed(ActionEvent e){
-            activeTraitement = Interface.DIJKSTRA_TRAITEMENT;
-            d.reinit();
-            d.repaint();
+            if (mode==Interface.TRAITEMENT_MODE){
+                activeTraitement = Interface.DIJKSTRA_TRAITEMENT;
+                d.reinit();
+                d.repaint();
+            }
         }
     };
 
@@ -59,6 +62,27 @@ public class InterfaceO extends Interface {
             }
     };
 
+    public final AbstractAction ConnexiteO = new AbstractAction() {
+        {
+            putValue(Action.NAME,"Connexité");
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_L);
+            putValue(Action.SHORT_DESCRIPTION,"Vérifie si le graphe est fortement connexe \n"
+                                            + "(CTRL+L)");
+            putValue(Action.ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_DOWN_MASK));
+        }
+        @Override
+            public void actionPerformed(ActionEvent ea) {
+                if (mode==Interface.TRAITEMENT_MODE){
+                    if (Connexe.connexe(new GOriente(d))){
+                        JOptionPane.showMessageDialog(d, "Le graphe est fortement connexe.", "Connexité", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(d, "Le graphe n'est pas fortement connexe.", "Connexité", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+    };
+
     public final AbstractAction ExportGraphO = new AbstractAction() {
         {
             putValue(Action.NAME,"Export Graphe");
@@ -69,9 +93,11 @@ public class InterfaceO extends Interface {
         }
         @Override
             public void actionPerformed(ActionEvent ea) {
-                System.out.println(d.getNumOfCircles());
-                GOriente g = new GOriente(d);
-                g.afficher();
+                if (mode==Interface.TRAITEMENT_MODE){
+                    System.out.println(d.getNumOfCircles());
+                    GOriente g = new GOriente(d);
+                    g.afficher();
+                }
             }
     };
 
@@ -85,6 +111,8 @@ public class InterfaceO extends Interface {
         toolBarButtons.addSeparator();
         toolBarButtons.add(FordFulkerson);
         toolBarButtons.addSeparator();
+        toolBarButtons.add(ConnexiteO);
+        toolBarButtons.addSeparator();
         toolBarButtons.add(ExportGraphO);
     }
     
@@ -93,6 +121,7 @@ public class InterfaceO extends Interface {
         JMenu traitMenu = new JMenu("Traitement");
         traitMenu.add(Dijkstra);
         traitMenu.add(FordFulkerson);
+        traitMenu.add(ConnexiteO);
         traitMenu.add(ExportGraphO);
         menuBar.add(traitMenu);
     }

@@ -46,7 +46,7 @@ public class Draw extends JPanel implements MouseMotionListener {
     private int oriente = -1;
     public static final int ORIENTE = 0;
     public static final int NONORIENTE = 1;
-    private String nomSauvegarde;
+    private String nomSauvegarde = " ";
     
     //Pour les Arcs :
     /** Dernier Nœud sur lequel on a passé la souris */
@@ -61,6 +61,16 @@ public class Draw extends JPanel implements MouseMotionListener {
     private static final float LINIT = 2;
     /** Line width. */
     private float lineWidth = Draw.LINIT;
+    /** Définit si le graphe est pondéré ou non */
+    private boolean pondere = true;
+
+    public void setPondere(boolean bool){
+        this.pondere = bool;
+    }
+
+    public boolean getPondere(){
+        return this.pondere;
+    }
 
     public float getLineWidth(){
         return this.lineWidth;
@@ -144,13 +154,15 @@ public class Draw extends JPanel implements MouseMotionListener {
                                 System.out.println("Opération annulée");
                             }
                         } else if (currentArcIndex >= 0){
-                            String text = JOptionPane.showInputDialog("Entrer le nouveau poids de l'Arc (seuls les entiers seront acceptés):");
-                            try {
-                                int pds = Integer.parseInt(text);
-                                lines.get(currentArcIndex).setPoids(pds);
-                                repaint();
-                            } catch (Exception e) {
-                                System.out.println("Pas un entier !");
+                            if (pondere){
+                                String text = JOptionPane.showInputDialog("Entrer le nouveau poids de l'Arc (seuls les entiers seront acceptés):");
+                                try {
+                                    int pds = Integer.parseInt(text);
+                                    lines.get(currentArcIndex).setPoids(pds);
+                                    repaint();
+                                } catch (Exception e) {
+                                    System.out.println("Pas un entier !");
+                                }
                             }
                         } 
                     }
@@ -173,16 +185,21 @@ public class Draw extends JPanel implements MouseMotionListener {
                         //ATTENTION : il faudra prendre le compte le cas où on pointe vers le meme cercle
                         if ((currentCircleIndex >= 0) && (fromPoint!=null) && (!fromPoint.equals(circ[currentCircleIndex]))) { // inside circle
                             Ellipse2D.Double p = circ[currentCircleIndex];
-                            String text = JOptionPane.showInputDialog("Entrer le poids de l'Arc (seuls les entiers seront acceptés):");
-                            try {
-                                int pds = Integer.parseInt(text);
-                                addLine(new MyLine(fromPoint, p,pds,currentColor));
-                                repaint();
-                                //fromPoint = null;
-                            } catch (Exception e) {
-                                System.out.println("Pas un entier !");
-                                //fromPoint = null;
-                            } finally {
+                            if (pondere){
+                                String text = JOptionPane.showInputDialog("Entrer le poids de l'Arc (seuls les entiers seront acceptés):");
+                                try {
+                                    int pds = Integer.parseInt(text);
+                                    addLine(new MyLine(fromPoint, p,pds,currentColor));
+                                    repaint();
+                                    //fromPoint = null;
+                                } catch (Exception e) {
+                                    System.out.println("Pas un entier !");
+                                    //fromPoint = null;
+                                } finally {
+                                    fromPoint = null;
+                                }
+                            } else {
+                                addLine(new MyLine(fromPoint,p,1,currentColor));
                                 fromPoint = null;
                             }    
                         }
@@ -208,20 +225,27 @@ public class Draw extends JPanel implements MouseMotionListener {
                             removeArc(currentArcIndex);
                         }
                         if (evt.getClickCount() >= 2 && currentCircleIndex >= 0){
-                            String text = JOptionPane.showInputDialog("Entrer le poids de l'Arc (seuls les entiers seront acceptés):");
-                            try {
-                                int pds = Integer.parseInt(text);
-                                MyLine arc = new MyLine(circ[currentCircleIndex], circ[currentCircleIndex],pds,currentColor);
+                            if (pondere){
+                                String text = JOptionPane.showInputDialog("Entrer le poids de l'Arc (seuls les entiers seront acceptés):");
+                                try {
+                                    int pds = Integer.parseInt(text);
+                                    MyLine arc = new MyLine(circ[currentCircleIndex], circ[currentCircleIndex],pds,currentColor);
+                                    Ellipse2D.Double clou = new Ellipse2D.Double(x-40,y,MyLine.RCLOU,MyLine.RCLOU);
+                                    arc.setClou(clou);
+                                    addLine(arc);
+                                    repaint();
+                                } catch (Exception e) {
+                                    System.out.println("Pas un entier !");
+                                    
+                                } finally {
+                                    fromPoint = null;
+                                } 
+                            } else {
+                                MyLine arc = new MyLine(circ[currentCircleIndex], circ[currentCircleIndex],1,currentColor);
                                 Ellipse2D.Double clou = new Ellipse2D.Double(x-40,y,MyLine.RCLOU,MyLine.RCLOU);
                                 arc.setClou(clou);
                                 addLine(arc);
-                                repaint();
-                            } catch (Exception e) {
-                                System.out.println("Pas un entier !");
-                                
-                            } finally {
-                                fromPoint = null;
-                            } 
+                            }
                         }
                     }
                 }
@@ -258,7 +282,9 @@ public class Draw extends JPanel implements MouseMotionListener {
             int y1 = lines.get(i).getFromPoint().y;
             int x3 = lines.get(i).getClouPoint().x;
             int y3 = lines.get(i).getClouPoint().y;
-            ((Graphics2D) g).drawString(""+lines.get(i).getPoids(),x3,y3-10);
+            if (pondere){
+                ((Graphics2D) g).drawString(""+lines.get(i).getPoids(),x3,y3-10);
+            }
             if (lines.get(i).getFrom().equals(lines.get(i).getTo())) {
                 calcArc(x1,y1,x3,y3,g);
             } else {
