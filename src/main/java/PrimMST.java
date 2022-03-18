@@ -3,12 +3,12 @@ Classe PrimMST définissant l'algorithme de PrimMST
 Sous classe de la classe Traitement
 Auteur : Samy AMAL
 Date de création : 04/02/2022
-Date de dernière modification : 08/03/2022
+Date de dernière modification : 18/03/2022
 =============================================*/
 
 import java.awt.Color;
 
-public class PrimMST extends Traitement {
+public class PrimMST implements Connexe, Traitement {
 
     /**
      * Arbre couvrant minimal
@@ -21,7 +21,7 @@ public class PrimMST extends Traitement {
         
         GNonOriente G = new GNonOriente(d);
         this.arbre = new Arc[G.nbsommets];
-        boolean verif = Connexe.connexe(G);
+        boolean verif = connexe(G);
         if (verif){
             // To represent set of vertices included in MST
             boolean vu[] = new boolean[G.nbsommets];

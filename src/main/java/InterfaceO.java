@@ -13,7 +13,7 @@ import javax.swing.KeyStroke;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 
-public class InterfaceO extends Interface {
+public class InterfaceO extends Interface implements Connexe {
 
     public InterfaceO(Draw d){
         super(d);
@@ -74,7 +74,7 @@ public class InterfaceO extends Interface {
         @Override
             public void actionPerformed(ActionEvent ea) {
                 if (mode==Interface.TRAITEMENT_MODE){
-                    if (Connexe.connexe(new GOriente(d))){
+                    if (connexe(new GOriente(d))){
                         JOptionPane.showMessageDialog(d, "Le graphe est fortement connexe.", "Connexité", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(d, "Le graphe n'est pas fortement connexe.", "Connexité", JOptionPane.INFORMATION_MESSAGE);

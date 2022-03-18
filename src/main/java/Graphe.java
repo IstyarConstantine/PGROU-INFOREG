@@ -1,15 +1,15 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-
 /*=============================================
 Classe abstraite Graphe définissant la structure 
 générale d'un graphe
 Auteur : Béryl CASSEL
 Date de création : 27/01/2022
-Date de dernière modification : 08/03/2022
+Date de dernière modification : 18/03/2022
 =============================================*/
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public abstract class Graphe {
 
@@ -75,11 +75,6 @@ public abstract class Graphe {
     public void setLstArcs(ArrayList<Arc> lstArcs) {
         this.lstArcs = lstArcs;
     }
-    
-    /**
-     * Getter du graphe de version précédente
-     * @return un graphe
-     */
 
     /**
      * Getter de la matrice d'adjacence du graphe

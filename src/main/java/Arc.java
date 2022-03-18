@@ -3,6 +3,7 @@ Classe Objet Arc définissant un Arc orienté
 Auteur : Béryl CASSEL
 Date de création : 26/01/2022
 Date de dernière modification : 08/03/2022
+Commentaires Ajoutés
 =============================================*/
 
 public class Arc {
@@ -27,8 +28,6 @@ public class Arc {
      */
     private int poids;
 
-    private boolean oriente;
-
     /**
      * Constructeur d'un Arc orienté
      * @param s = sommet source de l'Arc
@@ -40,23 +39,16 @@ public class Arc {
         this.src = s;
         this.dest = d;
         this.poids = p;
-        this.setLine(ind);
+        this.line = ind;
     }
 
-    public boolean isOriente() {
-        return oriente;
-    }
-
-    public void setOriente(boolean oriente) {
-        this.oriente = oriente;
-    }
-
+    /**
+     * Getter de l'indice de la ligne représentant cet arc dans la
+     * liste lines du Draw de notre interface
+     * @return l'indice de l'arc dans la liste lines
+     */
     public int getLine() {
 		return line;
-	}
-
-	public void setLine(int line) {
-		this.line = line;
 	}
 
 	/**
@@ -117,6 +109,11 @@ public class Arc {
         return this.poids - compareEdge.poids;
     }
 
+    /**
+     * Méthode permettant de générer une ligne de représentation
+     * de l'arc dans la console
+     * @return une ligne décrivant l'arc
+     */
     public String toString(){
         return this.src + " -> " + this.dest + " : " + this.poids;
     }

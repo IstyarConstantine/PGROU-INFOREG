@@ -15,7 +15,7 @@ import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 
 
-public class InterfaceNO extends Interface {
+public class InterfaceNO extends Interface implements Connexe{
 
     public InterfaceNO(Draw d){
         super(d);
@@ -77,7 +77,7 @@ public class InterfaceNO extends Interface {
         @Override
             public void actionPerformed(ActionEvent ea) {
                 if (mode==Interface.TRAITEMENT_MODE){
-                    if (Connexe.connexe(new GNonOriente(d))){
+                    if (connexe(new GNonOriente(d))){
                         JOptionPane.showMessageDialog(d, "Le graphe est connexe.", "Connexité", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(d, "Le graphe n'est pas connexe.", "Connexité", JOptionPane.INFORMATION_MESSAGE);

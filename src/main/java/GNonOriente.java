@@ -52,7 +52,6 @@ public class GNonOriente extends Graphe {
      * @param a = Arc à ajouter
      */
     public void addArc(Arc a) {
-        a.setOriente(false);
         int s = a.getSrc();
         int d = a.getDest();
         a.setDest(Integer.max(s,d));

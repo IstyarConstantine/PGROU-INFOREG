@@ -8,7 +8,9 @@ Date de dernière modification : 08/03/2022
 
 import java.awt.Color;
 
-public class Dijkstra extends Traitement{
+import javax.swing.JOptionPane;
+
+public class Dijkstra implements Traitement{
     
     /**
      * Liste des prédecesseurs
@@ -21,13 +23,17 @@ public class Dijkstra extends Traitement{
     private int dist[];
  
     /**
-     * Méthode réalisant l'algorithme de Dijkstra du PCC
-     * @param g Graphe
-     * @param s sommet source
+     * Méthode appliquant l'algorithme de Dijkstra sur le graphe
+     * orienté représenté par le Draw d afin de déterminer (si
+     * existence) le plus court chemin entre les sommets src et dest
+     * @param d : Draw représentant le graphe à étudié
+     * @param src : sommet de départ du parcours
+     * @param dest : sommet de destination du parcours
+     * @return true si il existe un chemin, false sinon
      */
-    public boolean dijkstra(Draw d, int src, int dest){
+    public void dijkstra(Draw d, int src, int dest){
 
-       GOriente g = new GOriente(d);
+        GOriente g = new GOriente(d);
         this.dist = new int[g.getNbsommets()]; 
         // The output array. dist[i] will hold
         // the shortest distance from src to i
@@ -71,60 +77,34 @@ public class Dijkstra extends Traitement{
                     this.predecesseur[v]= u;
                 }
         }
-        return printResult(d,src,dest);
-    }
-        
-    /**
-     * Méthode permettant d'afficher le résultat
-     * dans l'ordre croissant des distances parcourues
-     */
-    public boolean printResult(Draw d,int src,int dest){
-        boolean chemin = true;
-        try {
-            System.out.println("Vertex \t\t Distance from Source \t\t Predecesseurs");
-            int s = dest;
-            int p = predecesseur[s];
-            int count = 0;
-            //index dist min and last dist
-            while ((s!=src) && (count<d.getNumOfCircles()) && (p!=-1)){
-                System.out.println(s + " \t\t " + dist[s] + " \t\t\t\t " + p);
-                int ind = d.findLine(p, s);
+        int s = dest;
+        int p = predecesseur[s];
+        int count = 0;
+        //index dist min and last dist
+        while ((s!=src) && (count<d.getNumOfCircles()) && (p!=-1)){
+            int ind = d.findLine(p, s);
+            if (ind!=-1){
                 d.getLines().get(ind).setC(Color.RED);
                 s = p;
                 p = predecesseur[p];
                 count++;
-            }
-            if (s!=src){
-                d.reinit();
-                System.out.println("Il n'existe pas de chemin entre ces deux sommets");
-                chemin = false;
-            } 
-            d.repaint();
-            return(chemin);
-        } catch (Exception e){
-            System.out.println("Il n'existe pas de chemin entre ces deux sommets");
-            chemin = false;
+            } else {
+                p = -1;
+            }  
         }
-        return chemin;
-    }
-
-    /**
-     * Getter de la liste des prédecesseurs
-     * @return predecesseur
-     */
-    public int[] getPredecesseur() {
-        return predecesseur;
-    }
-
-    /**
-     * Getter de la liste des distances(poids) parcourues
-     * @return dist
-     */
-    public int[] getDist() {
-        return dist;
-    }
-    
-    
+        if (s!=src){
+            d.reinit();
+            JOptionPane.showMessageDialog(null, "Il n'existe pas de plus court chemin entre les sommets "
+                                            + d.getCircLbl()[src] + " et " + d.getCircLbl()[dest]+ ".", 
+                                            "PCC", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            d.repaint();
+            JOptionPane.showMessageDialog(null, "Il existe un plus court chemin entre les sommets "
+                                                + d.getCircLbl()[src] + " et " + d.getCircLbl()[dest]
+                                                + ", de distance " + dist[dest] + ".", 
+                                                "PCC", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }   
 
 }
 

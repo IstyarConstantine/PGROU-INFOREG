@@ -16,6 +16,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -113,14 +115,22 @@ public abstract class Interface{
 
         @Override
         public void actionPerformed(ActionEvent e){
-            if (d.getNomSauvegarde()!=" "){
-                (new SauvDraw(d.getNomSauvegarde())).sauvegarderDraw(d);
+            if (d.getPathSauvegarde()!=" "){
+                File f = new File(d.getPathSauvegarde());
+                (new SauvDraw(f)).sauvegarderDraw(d);
             } else {
                 try {
-                    String lbl = JOptionPane.showInputDialog("Entrer nom sauvegarde :");
-                    d.setNomSauvegarde(lbl + ".inforeg");
-                    frame.setName("INFOREG " + d.getNomSauvegarde());
-                    (new SauvDraw(d.getNomSauvegarde())).sauvegarderDraw(d);
+                    JFileChooser dialogue = new JFileChooser(".");
+                    if (dialogue.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
+                        File fichier = dialogue.getSelectedFile();
+                        String source = fichier.getName();
+                        if (source.length() < 8 || !source.toLowerCase().substring(source.length()-8).equals(".inforeg")) {
+                            d.setPathSauvegarde(fichier.getPath() + ".inforeg");
+                        } else {
+                            d.setPathSauvegarde(fichier.getPath());
+                        }
+                        (new SauvDraw(fichier)).sauvegarderDraw(d);
+                    }
                 } catch (Exception NullPointerException){
                     System.out.println("Opération annulée");
                 }
@@ -137,10 +147,17 @@ public abstract class Interface{
         @Override
         public void actionPerformed(ActionEvent e){
             try {
-                String lbl = JOptionPane.showInputDialog("Entrer nom sauvegarde :");
-                d.setNomSauvegarde(lbl + ".inforeg");
-                frame.setName("INFOREG " + d.getNomSauvegarde());
-                (new SauvDraw(d.getNomSauvegarde())).sauvegarderDraw(d);
+                JFileChooser dialogue = new JFileChooser(".");
+                if (dialogue.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
+                    File fichier = dialogue.getSelectedFile();
+                    String source = fichier.getName();
+                    if (source.length() < 8 || !source.toLowerCase().substring(source.length()-8).equals(".inforeg")) {
+                        d.setPathSauvegarde(fichier.getPath() + ".inforeg");
+                    } else {
+                        d.setPathSauvegarde(fichier.getPath());
+                    }
+                    (new SauvDraw(fichier)).sauvegarderDraw(d);
+                }
             } catch (Exception NullPointerException){
                 System.out.println("Opération annulée");
             }
@@ -153,7 +170,7 @@ public abstract class Interface{
 
     public void createAndShowGui() {
 
-        frame = new JFrame("INFOREG "+d.getNomSauvegarde());
+        frame = new JFrame("INFOREG "+d.getPathSauvegarde());
         //fermer la fenêtre quand on quitte
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
@@ -164,10 +181,7 @@ public abstract class Interface{
         initLeftMenuBar();
         addMenuBar();
         initRightMenuBar();
-
-        //BorderLayout.LINE_START permet de fixer le JPanel au début de la ligne (centre gauche)
         frame.add(toolBarButtons, BorderLayout.LINE_START);
-        //BorderLayout.CENTER permet de fixer le JPanel au centre
         frame.add(paneImage,BorderLayout.CENTER);
         Interface.colorBg = paneImage.getBackground();
         frame.setJMenuBar(menuBar);
@@ -178,9 +192,7 @@ public abstract class Interface{
         frame.pack();
         
         frame.setVisible(true);
-        //frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             
-
     }
     
     /**

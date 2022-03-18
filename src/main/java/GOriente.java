@@ -52,7 +52,6 @@ public class GOriente extends Graphe {
      * @param a = Arc à ajouter
      */
     public void addArc(Arc a){
-        a.setOriente(true);
         int s = a.getSrc();
         int d = a.getDest();
         if ((s<this.nbsommets) && (d<this.nbsommets)){
