@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -192,15 +193,35 @@ public class Draw extends JPanel implements MouseMotionListener {
             @Override
             public void mouseClicked(MouseEvent evt) {
                 if (Interface.mode==Interface.EDITION_MODE){
+                    int x = evt.getX();
+                    int y = evt.getY();
+                    currentArcIndex = getArc(x, y);
+                    currentCircleIndex = getRec(x, y);
                     // Si on clique deux fois sur un Nœud, on le supprime
-                    if (Interface.activeTool==Interface.NOEUD_TOOL) {
+                    if (Interface.activeTool==Interface.NOEUD_TOOL && currentCircleIndex >= 0) {
                         if (evt.getClickCount() >= 2) {
                             remove(currentCircleIndex);
                         }
                     }
                     if (Interface.activeTool==Interface.ARC_TOOL) {
-                        if (evt.getClickCount() >= 2){
+                        if (evt.getClickCount() >= 2 && currentArcIndex >= 0){
                             removeArc(currentArcIndex);
+                        }
+                        if (evt.getClickCount() >= 2 && currentCircleIndex >= 0){
+                            String text = JOptionPane.showInputDialog("Entrer le poids de l'Arc (seuls les entiers seront acceptés):");
+                            try {
+                                int pds = Integer.parseInt(text);
+                                MyLine arc = new MyLine(circ[currentCircleIndex], circ[currentCircleIndex],pds,currentColor);
+                                Ellipse2D.Double clou = new Ellipse2D.Double(x-40,y,MyLine.RCLOU,MyLine.RCLOU);
+                                arc.setClou(clou);
+                                addLine(arc);
+                                repaint();
+                            } catch (Exception e) {
+                                System.out.println("Pas un entier !");
+                                
+                            } finally {
+                                fromPoint = null;
+                            } 
                         }
                     }
                 }
@@ -232,27 +253,31 @@ public class Draw extends JPanel implements MouseMotionListener {
         //order : draw line puis draw circles
         for (int i = 0 ; i < numOfLines; i++){
             ((Graphics2D) g).setPaint(lines.get(i).getC());
+            ((Graphics2D) g).setStroke(new BasicStroke(lineWidth));
             int x1 = lines.get(i).getFromPoint().x;
             int y1 = lines.get(i).getFromPoint().y;
-            int x2 = lines.get(i).getToPoint().x;
-            int y2 = lines.get(i).getToPoint().y;
             int x3 = lines.get(i).getClouPoint().x;
             int y3 = lines.get(i).getClouPoint().y;
-            ((Graphics2D) g).setStroke(new BasicStroke(lineWidth));
-            ((Graphics2D) g).drawLine(x1,y1,x3,y3);
-            ((Graphics2D) g).drawLine(x3,y3,x2,y2);
-            ((Graphics2D) g).setPaint(Interface.colorBg); //clous set color background
-            ((Graphics2D) g).draw(lines.get(i).getClou());
-            ((Graphics2D) g).setPaint(lines.get(i).getC()); //reset color pour poids
             ((Graphics2D) g).drawString(""+lines.get(i).getPoids(),x3,y3-10);
-            if (oriente==Draw.ORIENTE){
-                int[] t = new int[4];
-                int x4 = (x3+x2)/2;
-                int y4 = (y3+y2)/2;
-                fleche(x3,y3,x4,y4,t);
-                ((Graphics2D) g).drawLine(x4,y4,t[0],t[1]);
-                ((Graphics2D) g).drawLine(x4,y4,t[2],t[3]);
-            }
+            if (lines.get(i).getFrom().equals(lines.get(i).getTo())) {
+                calcArc(x1,y1,x3,y3,g);
+            } else {
+                int x2 = lines.get(i).getToPoint().x;
+                int y2 = lines.get(i).getToPoint().y;
+                ((Graphics2D) g).drawLine(x1,y1,x3,y3);
+                ((Graphics2D) g).drawLine(x3,y3,x2,y2);
+                ((Graphics2D) g).setPaint(Interface.colorBg); //clous set color background
+                ((Graphics2D) g).draw(lines.get(i).getClou());
+                ((Graphics2D) g).setPaint(lines.get(i).getC()); //reset color pour poids
+                if (oriente==Draw.ORIENTE){
+                    int[] t = new int[4];
+                    int x4 = (x3+x2)/2;
+                    int y4 = (y3+y2)/2;
+                    fleche(x3,y3,x4,y4,t);
+                    ((Graphics2D) g).drawLine(x4,y4,t[0],t[1]);
+                    ((Graphics2D) g).drawLine(x4,y4,t[2],t[3]);
+                }
+            }   
         }
         for (int i = 0; i < numOfCircles; i++) {
             ((Graphics2D) g).setPaint(Color.BLACK);
@@ -406,7 +431,7 @@ public class Draw extends JPanel implements MouseMotionListener {
             int x = event.getX();
             int y = event.getY();
             if (currentArcIndex >= 0) {
-                lines.get(currentArcIndex).setClou(new Ellipse2D.Double(x,y,10,10));
+                lines.get(currentArcIndex).setClou(new Ellipse2D.Double(x,y,MyLine.RCLOU,MyLine.RCLOU));
                 repaint();
             }
         }    
@@ -461,4 +486,69 @@ public class Draw extends JPanel implements MouseMotionListener {
         }
     }
 
+/**
+ * @return x, solution of (a+bx)²+(c+dx)²=e²
+ */
+    private static double resolve(double a, double b, double c, double d, double e) {
+        // http://www.wolframalpha.com/input/?t=crmtb01&i=(a%2Bb*x)%C2%B2%2B(c%2Bd*x)%C2%B2%3De%C2%B2
+        return (-Math.sqrt(Math.abs(2*a*b*c*d - a*a*d*d - b*b*c*c + b*b*e*e + d*d*e*e)) - (a*b+c*d)) / (b*b+d*d);
+    }
+
+    public Point sym(int x, int y, double a, double b,int x1, int y1, int x2, int y2){
+        double alpha = a*((double) x) - ((double) y)+2*b;
+        double beta = (double) (x2-x1);
+        double gamma = (double) (y2-y1);
+        int xM = (int) Math.round((gamma*(((double) y-alpha))+beta*((double) x))/(a*gamma+beta));
+        int yM = (int) Math.round(alpha+a*((double) xM));
+        Point p = new Point(xM,yM);
+        return p;
+    }
+
+    public void calcArc(int x1, int y1, int x2, int y2, Graphics g) {
+
+        // Parameters
+        //------------
+        double h = 50; // >0 and <=p
+        
+        // Computation
+        //------------
+        
+        double x3 = (x1+x2)/2;
+        double y3 = (y1+y2)/2; // (x3,y3) middle of (x1,y1) and (x2,y2)
+        double p = Math.hypot(x3-x1,y3-y1); // distance between (x1,y1) and (x3,y3) solve (x3-x1)²+(y3-y1)²=p²
+        double r = (p*p+h*h)/(2*h); // on right triangle, solve p²+(r-h)²=r²
+        double a = (((double) y1)-((double)y2)) / (((double) x1)-((double)x2));
+        double b = ((double) y1)-a*((double) x1); // y=ax+b for (x1,y1) and (x2,y2)
+        double c = -1/a;
+        double d = y3-c*x3; // line y=cx+d is perpendicular with line y=ax+b
+        
+        
+        // y0=c.x0+d so distance between (x0,y0) and (x3,y3) solve (x3-x0)²+(y3-(c.x0+d))² = (r-h)²
+        // pbm ici!!!
+        double x0 = resolve(x3, -1, y3-d, -c, r-h);
+        double y0 = c*x0+d;
+        Point m = sym((int) x0,(int) y0,a,b,x1,y1,x2,y2);
+        
+        double alpha1 = Math.atan2(y1-y0,x1-x0);
+        double alpha2 = Math.atan2(y2-y0,x2-x0);
+        //double alphabis1 = Math.atan2(y1-m.y,x1-m.x);
+        //double alphabis2 = Math.atan2(y2-m.y,x2-m.x);
+        
+        // Display
+        //------------
+        
+        int x = (int) Math.round(x0 - r);
+        int y = (int) Math.round(y0 - r);
+        int xbis = (int) Math.round(m.x - r);
+        int ybis = (int) Math.round(m.y - r);
+        int width = (int) Math.round(2*r);
+        int height = width;
+        // angles are negative because Swing origin is on top-left corner with descending ordinates
+        int startAngle = (int) -Math.round(Math.toDegrees(alpha1));
+        int arcAngle = (int) -Math.round(Math.toDegrees(alpha2 - alpha1));
+        //int startAnglebis = (int) -Math.round(Math.toDegrees(alphabis1));
+        //int arcAnglebis = (int) -Math.round(Math.toDegrees(alphabis2 - alphabis1));
+        g.drawArc(x, y, width, height, startAngle, arcAngle);
+        g.drawArc(xbis,ybis,width,height,180+startAngle,arcAngle);
+    }
 }
