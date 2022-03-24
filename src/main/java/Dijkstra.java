@@ -33,7 +33,7 @@ public class Dijkstra implements Traitement{
      */
     public void dijkstra(Draw d, int src, int dest){
 
-        GOriente g = new GOriente(d);
+        GOriente g = (GOriente) d.getG();
         this.dist = new int[g.getNbsommets()]; 
         // The output array. dist[i] will hold
         // the shortest distance from src to i

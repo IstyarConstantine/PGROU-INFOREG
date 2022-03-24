@@ -21,7 +21,7 @@ public class PrimMST implements Connexe, Traitement {
     // using adjacency matrix representation
     public void primMST(Draw d) {
         
-        GNonOriente G = new GNonOriente(d);
+        GNonOriente G = (GNonOriente) d.getG();
         this.arbre = new Arc[G.nbsommets];
         if (connexe(G)){
             // To represent set of vertices included in MST

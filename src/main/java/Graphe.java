@@ -109,27 +109,43 @@ public abstract class Graphe {
     }
 
     /**
-     * Méthode permettant d'afficher dans le terminal 
+     * Méthode permettant de générer un String représentant
      * la matrice d'adjacence du graphe
+     * @return un String représentant la matrice
      */
-    public void afficher(){
-        System.out.println("Noeuds :");
-        for (int i=0;i<this.nbsommets;i++){
-            System.out.println(this.lstNoeuds.get(i).toString());
-        }
-        System.out.println("Arcs :");
-        for (int i=0;i<this.lstArcs.size();i++){
-            System.out.println(this.lstArcs.get(i).toString());
-        }
-        System.out.println("Matrice :");
-        String t;
-        for (int i=0;i<this.nbsommets;i++){
-            t = "|";
-            for (int j=0;j<this.nbsommets;j++){
-                t += this.adj[i][j] + "|";
+    public String afficher(){
+        int d = findMaxDecimal();
+        String mat = "";
+        for (int i = 0;i<nbsommets;i++){
+            mat += "|";
+            for (int j = 0; j<nbsommets;j++){
+                mat += formatInt(adj[i][j], d) + "|";
             }
-            System.out.println(t);
+            mat += "\n";
         }
+        return mat;
+    }
+
+    public int findMaxDecimal(){
+        int max = 0;
+        for (int i=0;i<nbsommets;i++){
+            for (int j=0;j<nbsommets;j++){
+                if (String.valueOf(adj[i][j]).length()>max){
+                    max = String.valueOf(adj[i][j]).length();
+                }
+            }
+        }
+        return max;
+    }
+
+    public String formatInt(int n, int d){
+        String aux = String.valueOf(n);
+        int count = d - aux.length();
+        while (count>0){
+            aux = "_" + aux;
+            --count;
+        }
+        return aux;
     }
     
     /**

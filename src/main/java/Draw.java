@@ -63,6 +63,13 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
     /** Définit si le graphe est pondéré ou non */
     private boolean pondere = true;
 
+    /** Graphe représenté par le Draw */
+    private Graphe G = null;
+
+    public Graphe getG(){
+        return this.G;
+    }
+
     public void setPondere(boolean bool){
         this.pondere = bool;
     }
@@ -143,7 +150,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                         }
                     }
                     // Si on souhaite ajouter un label à un Nœud :
-                    if (Interface.activeTool==Interface.LABEL_TOOL) {
+                    if (Interface.activeTool==Interface.LABEL_TOOL){
                         if (currentCircleIndex >= 0){ // inside a circle
                             try {
                                 String lbl = JOptionPane.showInputDialog("Entrer label :");
@@ -491,5 +498,18 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
         }
     }
 
+    /**
+     * Méthode permettant d'actualiser le Graphe G représenté par le Draw
+     */
+    public void exportGraphe(){
+        switch (this.oriente){
+            case Draw.ORIENTE:
+                this.G = new GOriente(this);
+                break;
+            case Draw.NONORIENTE:
+                this.G = new GNonOriente(this);
+                break;
+        }
+    }
 
 }

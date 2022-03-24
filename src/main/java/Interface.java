@@ -319,6 +319,7 @@ public abstract class Interface{
                     d.reinit();
                     d.repaint();
                     mode = TRAITEMENT_MODE;
+                    d.exportGraphe();
                 }
             }
         };

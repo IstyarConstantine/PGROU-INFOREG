@@ -74,7 +74,7 @@ public class InterfaceO extends Interface implements Connexe {
         @Override
             public void actionPerformed(ActionEvent ea) {
                 if (mode==Interface.TRAITEMENT_MODE){
-                    if (connexe(new GOriente(d))){
+                    if (connexe((GOriente) d.getG())){
                         JOptionPane.showMessageDialog(d, "Le graphe est fortement connexe.", "Connexité", JOptionPane.INFORMATION_MESSAGE);
                     } else {
                         JOptionPane.showMessageDialog(d, "Le graphe n'est pas fortement connexe.", "Connexité", JOptionPane.INFORMATION_MESSAGE);
@@ -94,9 +94,7 @@ public class InterfaceO extends Interface implements Connexe {
         @Override
             public void actionPerformed(ActionEvent ea) {
                 if (mode==Interface.TRAITEMENT_MODE){
-                    System.out.println(d.getNumOfCircles());
-                    GOriente g = new GOriente(d);
-                    g.afficher();
+                    JOptionPane.showMessageDialog(d, "La matrice d'adjacence du graphe orienté est :\n\n" + d.getG().afficher(), "Matrice d'adjacence", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
     };
