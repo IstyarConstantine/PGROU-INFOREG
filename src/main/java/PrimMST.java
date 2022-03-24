@@ -3,10 +3,12 @@ Classe PrimMST définissant l'algorithme de PrimMST
 Sous classe de la classe Traitement
 Auteur : Samy AMAL
 Date de création : 04/02/2022
-Date de dernière modification : 18/03/2022
+Date de dernière modification : 24/03/2022
 =============================================*/
 
 import java.awt.Color;
+
+import javax.swing.JOptionPane;
 
 public class PrimMST implements Connexe, Traitement {
 
@@ -17,12 +19,11 @@ public class PrimMST implements Connexe, Traitement {
     
     // Function to construct and print MST for a graph represented
     // using adjacency matrix representation
-    public boolean primMST(Draw d) {
+    public void primMST(Draw d) {
         
         GNonOriente G = new GNonOriente(d);
         this.arbre = new Arc[G.nbsommets];
-        boolean verif = connexe(G);
-        if (verif){
+        if (connexe(G)){
             // To represent set of vertices included in MST
             boolean vu[] = new boolean[G.nbsommets];
 
@@ -58,22 +59,16 @@ public class PrimMST implements Connexe, Traitement {
                         this.arbre[v] = new Arc(v, u, G.adj[u][v],G.findArc(u,v));
                     }
             }
-            printResult(d);
+            int p = 0;
+            for (int i = 1;i<this.arbre.length;i++){
+                d.getLines().get(this.arbre[i].getLine()).setC(Color.RED);
+                p += d.getLines().get(this.arbre[i].getLine()).getPoids();
+            }
+            JOptionPane.showMessageDialog(null, "L'arbre couvrant minimal du graphe a un poids de " + p + ".", "Prim MST", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Le graphe n'est pas connexe !", "Prim MST", JOptionPane.INFORMATION_MESSAGE);
         }
-        return verif;
     }
-    
-    // Méthode d'affichage des résultats de l'algorithme de Prim
-    public void printResult(Draw d){
-        System.out.println("Edge \tWeight");
-        for (int i = 1; i<this.arbre.length; i++){
-            int src = this.arbre[i].getSrc();
-            int dest = this.arbre[i].getDest();
-            System.out.println(src + " - " + dest + "\t" + this.arbre[i].getPoids());
-            d.getLines().get(this.arbre[i].getLine()).setC(Color.RED);
-        }
-        d.repaint();
-        }
 
     /**
      * Méthode permettant d'obtenir la liste des poids de l'arbre
@@ -85,30 +80,6 @@ public class PrimMST implements Connexe, Traitement {
             poids[i]=this.arbre[i].getPoids();
         }
         return poids;
-    }
-    
-    /**
-     * Méthode permettant d'obtenir le graphe représentant l'arbre couvrant minimal
-     * @return graphe de l'arbre
-     */
-    public Graphe toGraphe(){
-        Graphe g = new GNonOriente();
-        g.setNbsommets(this.arbre.length);
-        int adj[][] = new int[this.arbre.length][this.arbre.length];
-        for(int i = 1; i<this.arbre.length; i++){
-            adj[this.arbre[i].getSrc()][this.arbre[i].getDest()] = this.arbre[i].getPoids();
-            adj[this.arbre[i].getDest()][this.arbre[i].getSrc()] = this.arbre[i].getPoids();
-        }
-        g.setAdj(adj);
-        return g;
-    }
-    
-    /**
-     * Getter de l'arbre couvrant minimal
-     * @return l'arbre
-     */
-    public Arc[] getArbre() {
-        return arbre;
     }
     
 }

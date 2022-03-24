@@ -2,7 +2,7 @@
 Classe InterfaceNO
 Auteur : Béryl CASSEL
 Date de création : 08/03/2022
-Date de dernière modification : 08/03/2022
+Date de dernière modification : 24/03/2022
 =============================================*/
 
 import java.awt.event.ActionEvent;
@@ -39,10 +39,7 @@ public class InterfaceNO extends Interface implements Connexe{
                 activeTraitement = Interface.PRIM_TRAITEMENT;
                 d.reinit();
                 d.repaint();
-                boolean v = (new PrimMST()).primMST(d);
-                if (!v){
-                    JOptionPane.showMessageDialog(d, "Le graphe n'est pas connexe, impossible de déterminer l'ACM.", "Graphe Non Connexe !", JOptionPane.INFORMATION_MESSAGE);
-                }
+                (new PrimMST()).primMST(d);
             }
         }
     };
