@@ -365,10 +365,11 @@ public abstract class Interface{
         exportLatex.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                //TODO 
-                //idée : fenêtre dans laquelle on remplit les critères (couleurs, style ...)
+                ExportLatex frameLatex = new ExportLatex();
+                frameLatex.frameLatex(d);
             }
         });
+
         exporter.add(exportLatex);
         
         fileMenu.add(ouvrir);
