@@ -4,7 +4,6 @@ Auteur : Samy AMAL
 Date de création : 03/03/2022
 Date de dernière modification : 08/03/2022
 =============================================*/
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,8 +15,10 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -105,7 +106,6 @@ public abstract class Interface{
 
         /** Actions */
 
-    /** Action de sauvegarde du graphe dans une sauvegarde existante */
     public final AbstractAction Save = new AbstractAction(){
         {
             putValue(Action.NAME,"Enregistrer");
@@ -117,13 +117,9 @@ public abstract class Interface{
 
         @Override
         public void actionPerformed(ActionEvent e){
-
-            // Si un fichier de sauvegarde existe déjà, on l'écrase et on effectue une nouvelle sauvegarde
             if (d.getPathSauvegarde()!=" "){
                 File f = new File(d.getPathSauvegarde());
                 (new SauvDraw(f)).sauvegarderDraw(d);
-
-            // Sinon, on créé un nouveau fichier de sauvegarde
             } else {
                 try {
                     JFileChooser dialogue = new JFileChooser(".");
@@ -144,7 +140,6 @@ public abstract class Interface{
         };
     };
 
-    /** Création d'unnouveau fichier de sauvegarde */
     public final AbstractAction SaveAs = new AbstractAction(){
         {
             putValue(Action.NAME,"Enregistrer Sous");
@@ -171,17 +166,10 @@ public abstract class Interface{
         };
     };
 
-    /**
-     * Constructeur d'une interface
-     * @param d = instance de Draw permettant de dessiner le graphe
-     */
     public Interface(Draw d){
         this.d = d;
     }
 
-    /**
-     * Affichage de l'interface
-     */
     public void createAndShowGui() {
 
         frame = new JFrame("INFOREG "+d.getPathSauvegarde());
@@ -333,7 +321,6 @@ public abstract class Interface{
                     d.reinit();
                     d.repaint();
                     mode = TRAITEMENT_MODE;
-                    d.exportGraphe();
                 }
             }
         };
@@ -371,7 +358,7 @@ public abstract class Interface{
         });
 
         exporter.add(exportLatex);
-        
+
         fileMenu.add(ouvrir);
         fileMenu.addSeparator();
         fileMenu.add(Save);
@@ -440,7 +427,103 @@ public abstract class Interface{
         iconBack = new ImageIcon(imageBack); 
         iconForward = new ImageIcon(imageForward);
         back = new JButton(iconBack);
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                Transitions piles = d.getTransitions();
+                Collection<Enregistrement> pileZ = piles.getPreviousStates();
+                if(pileZ.isEmpty()){
+                    return;
+                }
+                Enregistrement lastReg = piles.getPreviousState();
+                // Pour chaque action, on effectue l'action inverse
+                // Ensuite, on déplace l'action sur l'autre pile
+                switch(lastReg.action){
+                    case "addCircle":
+                        d.remove(lastReg.n);
+                        break;
+                    case "moveCircle":
+                        d.getCirc()[lastReg.n].x = lastReg.x;
+                        d.getCirc()[lastReg.n].y = lastReg.y;
+                        d.repaint();
+                        break;
+                    case "deleteCircle":
+                        d.add(lastReg.x, lastReg.y);
+                        break;
+                    case "addLine":
+                        d.removeArc(lastReg.n);
+                        break;
+                    case "moveLine":
+                        MyLine line = d.getLines().get(lastReg.n);
+                        line.setClou(new Ellipse2D.Double(lastReg.x,lastReg.y,MyLine.RCLOU,MyLine.RCLOU));
+                        d.repaint();
+                        break;
+                    case "deleteLine":
+                        d.addLine(lastReg.line);
+                        break;
+                    case "updateLbl":
+                        d.getCircLbl()[lastReg.n] = lastReg.currentLbl;
+                        d.repaint();
+                        break;
+                    case "updatePds":
+                        d.getLines().get(lastReg.n).setPoids(Integer.parseInt(lastReg.currentLbl));
+                        d.repaint();
+                        break;
+                    default:
+                        break;
+                }
+                piles.addNextState(lastReg);
+                pileZ.remove(lastReg);
+            }
+        });
         forward = new JButton(iconForward);
+        forward.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                Transitions piles = d.getTransitions();
+                Collection<Enregistrement> pileY = piles.getNextStates();
+                if(pileY.isEmpty()){
+                    return;
+                }
+                Enregistrement nextReg = piles.getNextState();
+                // Pour chaque action, on l'exécute
+                // Ensuite, on déplace l'action sur l'autre pile
+                switch(nextReg.action){
+                    case "addCircle":
+                        d.add(nextReg.x, nextReg.y);
+                        break;
+                    case "moveCircle":
+                        d.getCirc()[nextReg.n].x = nextReg.x2;
+                        d.getCirc()[nextReg.n].y = nextReg.y2;
+                        d.repaint();
+                        break;
+                    case "deleteCircle":
+                        d.remove(nextReg.n);
+                        break;
+                    case "addLine":
+                        d.addLine(nextReg.line);
+                        break;
+                    case "moveLine":
+                        MyLine line = d.getLines().get(nextReg.n);
+                        line.setClou(new Ellipse2D.Double(nextReg.x2,nextReg.y2,MyLine.RCLOU,MyLine.RCLOU));
+                        d.repaint();
+                        break;
+                    case "deleteLine":
+                        d.removeArc(nextReg.n);
+                        break;
+                    case "updateLbl":
+                        d.getCircLbl()[nextReg.n] = nextReg.newLbl;
+                        d.repaint();
+                        break;
+                    case "updatePds":
+                        d.getLines().get(nextReg.n).setPoids(Integer.parseInt(nextReg.newLbl));
+                        d.repaint();
+                        break;
+                    default:
+                        break;
+                }
+                piles.addPreviousState(nextReg);
+                pileY.remove(nextReg);
+            }
+        });
         //placer les back/forward à droite 
         menuBar.add(Box.createHorizontalGlue());
         menuBar.add(back);
