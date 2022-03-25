@@ -5,12 +5,15 @@ Date de création : 18/2022
 Date de dernière modification : 25/03/2022
 =============================================*/
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
@@ -25,9 +28,16 @@ public class ExportLatex {
     protected JFrame frame;
     
     /**
-     * JPanel contenant les éléments du frame
+     * JPanel contenant le source Latex d'export
      */
     protected JPanel panel;
+    /**
+     * JPanel contenant les boutons modifiant l'épaisseur des arcs
+     */
+    protected JPanel panelThicknessArc;
+    
+    
+    protected JPanel panelColorArc;
     
     /**
      * Couleur de remplissage des noeuds
@@ -57,6 +67,8 @@ public class ExportLatex {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         
+        initPanelThicknessArc(d);
+        initPanelCouleurArc(d);
         initPanelLatex(d);
         
         frame.pack();
@@ -65,17 +77,108 @@ public class ExportLatex {
     }
     
     /**
-     * Méthode permettant de créer le JPanel et les éléments du frame
+     * Méthode permettant de modifier les couleurs des arcs en noir
+     * @param d Draw
+     */
+    public void initPanelCouleurArc(Draw d){
+        
+        panelColorArc= new JPanel();
+        panelColorArc.setBorder (new TitledBorder(new EtchedBorder(),"Couleur des arcs"));
+        
+        //Thickness des arcs
+        JRadioButton colorArc1 = new JRadioButton("Couleurs du graphe");
+        JRadioButton colorArc2 = new JRadioButton("Tout en noir");
+        
+        ButtonGroup groupColorArc = new ButtonGroup();
+        groupColorArc.add(colorArc1);
+        groupColorArc.add(colorArc2);
+        
+        ActionListener groupColorArcListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (ae.getSource()==colorArc1) { 
+                    ;
+                } else if (ae.getSource()==colorArc2) {
+                    ;
+                }
+            }
+        };
+        colorArc1.addActionListener(groupColorArcListener);
+        colorArc2.addActionListener(groupColorArcListener);
+
+        panelColorArc.add(colorArc1);
+        panelColorArc.add(colorArc2);
+        frame.add(panelColorArc,BorderLayout.LINE_START);
+    }
+   
+    
+    
+    
+    /**
+     * Méthode permettant de créer le JPanel contenant les boutons permettant de 
+     * modifier l'épaisseur des arcs
+     * @param d Draw
+     */
+    public void initPanelThicknessArc(Draw d){
+        
+        panelThicknessArc = new JPanel();
+        panelThicknessArc.setBounds(0,0,100,20);
+        panelThicknessArc.setBorder (new TitledBorder(new EtchedBorder(),"Epaisseur des arcs"));
+        
+        
+        //Thickness des arcs
+        JRadioButton styleArc1 = new JRadioButton("ultra thick");
+        JRadioButton styleArc2 = new JRadioButton("very thick");
+        JRadioButton styleArc3 = new JRadioButton("thick");
+        JRadioButton styleArc4 = new JRadioButton("default");
+        
+        ButtonGroup groupStyleArc = new ButtonGroup();
+        groupStyleArc.add(styleArc1);
+        groupStyleArc.add(styleArc2);
+        groupStyleArc.add(styleArc3);
+        groupStyleArc.add(styleArc4);
+        
+        ActionListener groupStyleArcListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (ae.getSource()==styleArc1) { 
+                    setStyleArc("ultra thick");
+                } else if (ae.getSource()==styleArc2) {
+                    setStyleArc("very thick");
+                } else if (ae.getSource()==styleArc3) {
+                    setStyleArc("thick");
+                } else if (ae.getSource()==styleArc4) {
+                    setStyleArc("default");
+                }
+            }
+        };
+        styleArc1.addActionListener(groupStyleArcListener);
+        styleArc2.addActionListener(groupStyleArcListener);
+        styleArc3.addActionListener(groupStyleArcListener);
+        styleArc4.addActionListener(groupStyleArcListener);
+        //styleArc2 activé au démarrage
+        styleArc2.setSelected(true);
+
+        panelThicknessArc.add(styleArc1);
+        panelThicknessArc.add(styleArc2);
+        panelThicknessArc.add(styleArc3);
+        panelThicknessArc.add(styleArc4);
+        frame.add(panelThicknessArc);
+    }
+    
+    
+    
+    /**
+     * Méthode permettant de créer le JPanel contenant le source Latex de l'export
      * @param d Draw
      */
     public void initPanelLatex(Draw d){
         panel = new JPanel();
-        panel.setBorder (new TitledBorder(new EtchedBorder(),"Paramètres d'export"));
+        panel.setBorder (new TitledBorder(new EtchedBorder(),"Source LaTeX"));
         JTextArea display = new JTextArea(16, 58);
         display.setEditable (false); // set textArea non-editable
         JScrollPane scroll = new JScrollPane(display);
         scroll.setVerticalScrollBarPolicy (ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        panel.add(scroll);
         
         JButton exportLatexButton = new JButton("Exporter");
         exportLatexButton.addActionListener(new ActionListener() { 
@@ -85,7 +188,9 @@ public class ExportLatex {
             } 
         } );
         panel.add(exportLatexButton);
-        frame.add(panel);
+        panel.add(scroll);
+        
+        frame.add(panel,BorderLayout.PAGE_END);
     }
     
     /**
@@ -222,10 +327,10 @@ public class ExportLatex {
     }
     
     /**
-     * Méthode permettant de choisir le style des arcs 
+     * Méthode permettant de modifier le style des arcs 
      */
-    public String choixStyleArc(){
-        return "\\tikzstyle{style}=[very thick]";
+    public void setStyleArc(String s){
+        this.styleLine = s;
     }
     
 }
