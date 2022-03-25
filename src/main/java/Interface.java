@@ -105,7 +105,7 @@ public abstract class Interface{
     protected static int taille ;
 
         /** Actions */
-
+    /** Action de sauvegarde du graphe dans une sauvegarde existante */
     public final AbstractAction Save = new AbstractAction(){
         {
             putValue(Action.NAME,"Enregistrer");
@@ -117,9 +117,11 @@ public abstract class Interface{
 
         @Override
         public void actionPerformed(ActionEvent e){
+            // Si un fichier de sauvegarde existe déjà, on l'écrase et on effectue une nouvelle sauvegarde
             if (d.getPathSauvegarde()!=" "){
                 File f = new File(d.getPathSauvegarde());
                 (new SauvDraw(f)).sauvegarderDraw(d);
+            // Sinon, on créé un nouveau fichier de sauvegarde
             } else {
                 try {
                     JFileChooser dialogue = new JFileChooser(".");
@@ -140,6 +142,7 @@ public abstract class Interface{
         };
     };
 
+    /** Création d'unnouveau fichier de sauvegarde */
     public final AbstractAction SaveAs = new AbstractAction(){
         {
             putValue(Action.NAME,"Enregistrer Sous");
@@ -166,10 +169,17 @@ public abstract class Interface{
         };
     };
 
+    /**
+     * Constructeur d'une interface
+     * @param d = instance de Draw permettant de dessiner le graphe
+     */
     public Interface(Draw d){
         this.d = d;
     }
 
+    /**
+     * Affichage de l'interface
+     */
     public void createAndShowGui() {
 
         frame = new JFrame("INFOREG "+d.getPathSauvegarde());
