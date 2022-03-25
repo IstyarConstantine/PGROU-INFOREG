@@ -328,20 +328,33 @@ public abstract class Interface{
             public void actionPerformed(ActionEvent ae) {
                 if (ae.getSource()==edition) {
                     mode = EDITION_MODE;
+                    select.setEnabled(true);
+                    noeud.setEnabled(true);
+                    arc.setEnabled(true);
+                    label.setEnabled(true);
                 } else if (ae.getSource()==traitement) {
                     d.reinit();
                     d.repaint();
                     mode = TRAITEMENT_MODE;
+                    select.setEnabled(false);
+                    noeud.setEnabled(false);
+                    arc.setEnabled(false);
+                    label.setEnabled(false);
                     d.exportGraphe();
                 }
             }
         };
 
         select.addActionListener(toolGroupListener);
+        //select activé au démarrage
+        select.setSelected(true);
         noeud.addActionListener(toolGroupListener);
         arc.addActionListener(toolGroupListener);
         label.addActionListener(toolGroupListener);
+        
         edition.addActionListener(modeGroupListener);
+        //edition activé au démarrage
+        edition.setSelected(true);
         traitement.addActionListener(modeGroupListener);
         
         toolBarButtons.setFloatable(false);
