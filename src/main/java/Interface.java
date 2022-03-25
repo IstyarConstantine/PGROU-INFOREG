@@ -100,6 +100,7 @@ public abstract class Interface{
     protected static int activeTraitement;
     public static final int PRIM_TRAITEMENT = 21;
     public static final int DIJKSTRA_TRAITEMENT = 22;
+    public static final int KRUSKAL_TRAITEMENT = 23;
     
     /** Attribut pour la taille des Noeuds. */
     protected static int taille ;

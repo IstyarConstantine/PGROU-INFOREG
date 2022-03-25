@@ -57,7 +57,10 @@ public class InterfaceNO extends Interface implements Connexe{
         @Override
         public void actionPerformed(ActionEvent e){
             if (mode==Interface.TRAITEMENT_MODE){
-                //TO DO: implémenter Kruskal à l'aide de la classe Graph// 
+                activeTraitement = Interface.KRUSKAL_TRAITEMENT;
+                d.reinit();
+                d.repaint();
+                (new KruskalMST()).kruskalMST(d);
             }
         }
     };

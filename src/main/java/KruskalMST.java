@@ -1,13 +1,17 @@
+/*=============================================
+Classe KruskalMST
+Auteur : Jorge QUISPE CCAMA
+Date de création : 04/02/2022
+Date de dernière modification : 25/03/2022
+=============================================*/
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author jquis
- */
+
 public class KruskalMST implements Connexe,Traitement {
 
     

@@ -6,7 +6,7 @@ Date de dernière modification : 08/03/2022
 Commentaires Ajoutés
 =============================================*/
 
-public class Arc {
+public class Arc implements Comparable<Arc> {
 
     /**
      * Indice de la ligne correspondant dans la liste lines de Draw()
