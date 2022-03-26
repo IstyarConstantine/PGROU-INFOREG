@@ -476,10 +476,10 @@ public abstract class Interface{
         Image imageForward = iconForward.getImage().getScaledInstance(15,15, java.awt.Image.SCALE_AREA_AVERAGING);
         iconBack = new ImageIcon(imageBack); 
         iconForward = new ImageIcon(imageForward);
+        Transitions piles = d.getTransitions();
         back = new JButton(iconBack);
         back.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                Transitions piles = d.getTransitions();
                 Collection<Enregistrement> pileZ = piles.getPreviousStates();
                 if(pileZ.isEmpty()){
                     return;
@@ -489,33 +489,40 @@ public abstract class Interface{
                 // Ensuite, on déplace l'action sur l'autre pile
                 switch(lastReg.action){
                     case "addCircle":
-                        d.remove(lastReg.n);
+                        d.remove(d.find(lastReg.noeud));
                         break;
                     case "moveCircle":
-                        d.getCirc()[lastReg.n].x = lastReg.x;
-                        d.getCirc()[lastReg.n].y = lastReg.y;
+                        lastReg.noeud.x = lastReg.x;
+                        lastReg.noeud.y = lastReg.y;
                         d.repaint();
                         break;
                     case "deleteCircle":
                         d.add(lastReg.x, lastReg.y);
                         break;
                     case "addLine":
-                        d.removeArc(lastReg.n);
-                        break;
+                        int fromIndex = d.find(lastReg.noeud);
+                        int toIndex = d.find(lastReg.noeud2);
+                        d.removeArc(d.findLine(fromIndex,toIndex));
                     case "moveLine":
-                        MyLine line = d.getLines().get(lastReg.n);
-                        line.setClou(new Ellipse2D.Double(lastReg.x,lastReg.y,MyLine.RCLOU,MyLine.RCLOU));
+                        MyLine line = lastReg.arc;
+                        line.setClou(lastReg.noeud);
                         d.repaint();
                         break;
                     case "deleteLine":
-                        d.addLine(lastReg.line);
+                        MyLine l = lastReg.arc;
+                        Ellipse2D.Double[] circles = d.getCirc();
+                        // Mettre à jour les nœuds source et destination
+                        Ellipse2D.Double pFrom = circles[d.find(lastReg.noeud)];
+                        Ellipse2D.Double pTo = circles[d.find(lastReg.noeud2)];
+                        MyLine updatedL = new MyLine(pFrom, pTo, l.getPoids(), l.getC());
+                        d.addLine(updatedL);
                         break;
                     case "updateLbl":
-                        d.getCircLbl()[lastReg.n] = lastReg.currentLbl;
+                        d.getCircLbl()[d.find(lastReg.noeud)] = lastReg.lastLbl;
                         d.repaint();
                         break;
                     case "updatePds":
-                        d.getLines().get(lastReg.n).setPoids(Integer.parseInt(lastReg.currentLbl));
+                        lastReg.arc.setPoids(Integer.parseInt(lastReg.lastLbl));
                         d.repaint();
                         break;
                     default:
@@ -528,7 +535,6 @@ public abstract class Interface{
         forward = new JButton(iconForward);
         forward.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                Transitions piles = d.getTransitions();
                 Collection<Enregistrement> pileY = piles.getNextStates();
                 if(pileY.isEmpty()){
                     return;
@@ -541,30 +547,38 @@ public abstract class Interface{
                         d.add(nextReg.x, nextReg.y);
                         break;
                     case "moveCircle":
-                        d.getCirc()[nextReg.n].x = nextReg.x2;
-                        d.getCirc()[nextReg.n].y = nextReg.y2;
+                        nextReg.noeud.x = nextReg.x2;
+                        nextReg.noeud.y = nextReg.y2;
                         d.repaint();
                         break;
                     case "deleteCircle":
-                        d.remove(nextReg.n);
+                        d.remove(d.find(nextReg.noeud));
                         break;
                     case "addLine":
-                        d.addLine(nextReg.line);
+                        MyLine l = nextReg.arc;
+                        Ellipse2D.Double[] circles = d.getCirc();
+                        // Mettre à jour les nœuds source et destination
+                        Ellipse2D.Double pFrom = circles[d.find(nextReg.noeud)];
+                        Ellipse2D.Double pTo = circles[d.find(nextReg.noeud2)];
+                        MyLine updatedL = new MyLine(pFrom, pTo, l.getPoids(), l.getC());
+                        d.addLine(updatedL);
                         break;
                     case "moveLine":
-                        MyLine line = d.getLines().get(nextReg.n);
-                        line.setClou(new Ellipse2D.Double(nextReg.x2,nextReg.y2,MyLine.RCLOU,MyLine.RCLOU));
+                        MyLine line = nextReg.arc;
+                        line.setClou(nextReg.noeud2);
                         d.repaint();
                         break;
                     case "deleteLine":
-                        d.removeArc(nextReg.n);
+                        int fromIndex = d.find(nextReg.noeud);
+                        int toIndex = d.find(nextReg.noeud2);
+                        d.removeArc(d.findLine(fromIndex,toIndex));
                         break;
                     case "updateLbl":
-                        d.getCircLbl()[nextReg.n] = nextReg.newLbl;
+                        d.getCircLbl()[d.find(nextReg.noeud)] = nextReg.newLbl;
                         d.repaint();
                         break;
                     case "updatePds":
-                        d.getLines().get(nextReg.n).setPoids(Integer.parseInt(nextReg.newLbl));
+                        nextReg.arc.setPoids(Integer.parseInt(nextReg.newLbl));
                         d.repaint();
                         break;
                     default:

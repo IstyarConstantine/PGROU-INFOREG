@@ -4,53 +4,72 @@ les modifications et de les rétablir à l'aide
 des boutons
 Auteur : Isaias VENEGAS
 Date de création : 24/03/2022
-Date de dernière modification : 25/03/2022
+Date de dernière modification : 26/03/2022
 =============================================*/
+import java.awt.geom.Ellipse2D;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 class Enregistrement {
     String action; // ajouter/supprimer des noeud/arc, modifier l'étiquette
-    double x; // position de creation d'un noeud
-    double y; // position de creation d'un noeud
-    MyLine line; // arc créé
-    int n; // indice de l'élément
-    String currentLbl; // label/poid originale
-    String newLbl; // nouveau label/poids
-    double x2; // position de déplacement d'un noeud
-    double y2; // position de déplacement d'un noeud
+    Ellipse2D.Double noeud; // noeud
+    double x; // position
+    double y; // position
+    MyLine arc; // arc crée/par supprimer
+    Ellipse2D.Double noeud2; // noeud supplémentaire
+    String lastLbl; // lbl/poid initial(e)
+    String newLbl; // lbl/poid actualisé(e)
+    double x2; // position supplémentaire
+    double y2; // position supplémentaire
    
     // Constructor pour les actions sur les nœuds
-    public Enregistrement(String action, double x, double y, int n) {
+    public Enregistrement(String action, Ellipse2D.Double circ) {
         this.action = action;
-        this.x = x;
-        this.y = y;
-        this.n = n;
+        this.noeud = circ;
+        this.x = circ.x;
+        this.y = circ.y;
     }
     
     // Constructor pour les actions sur les arcs
-    public Enregistrement(String action, MyLine line, int n) {
+    public Enregistrement(String action, MyLine line) {
         this.action = action;
-        this.line = line;
-        this.n = n;
+        this.arc = line;
+        this.noeud = line.getFrom();
+        this.noeud2 = line.getTo();
     }
 
     // Constructor pour les actions de modification des étiquettes
-    public Enregistrement(String action, String currentLbl, String newLbl, int n) {
+    public Enregistrement(String action, Ellipse2D.Double circ, String currentLbl, String newLbl) {
         this.action = action;
-        this.n = n;
-        this.currentLbl = currentLbl;
+        this.lastLbl = currentLbl;
         this.newLbl = newLbl;
+        this.noeud = circ;
+    }
+    
+    // Constructor pour les actions de modification des poids
+    public Enregistrement(String action, MyLine line, String currentLbl, String newLbl) {
+        this.action = action;
+        this.lastLbl = currentLbl;
+        this.newLbl = newLbl;
+        this.arc = line;
     }
     
     // Constructor pour les actions de mouvement
-    public Enregistrement(String action, double x, double y, double x2, double y2, int n) {
+    public Enregistrement(String action, Ellipse2D.Double circ, double x, double y, double x2, double y2) {
         this.action = action;
+        this.noeud = circ;
         this.x = x;
         this.y = y;
         this.x2 = x2;
         this.y2 = y2;
-        this.n = n;
+    }
+    
+    // Constructor pour les actions de mouvement
+    public Enregistrement(String action, MyLine line, Ellipse2D.Double fromClou, Ellipse2D.Double toClou) {
+        this.action = action;
+        this.arc = line;
+        this.noeud = fromClou;
+        this.noeud2 = toClou;
     }
 }
 public class Transitions{
@@ -63,20 +82,34 @@ public class Transitions{
        this.nextStates = new ConcurrentHashMap<>();
     }
     
-    public Enregistrement createLog(String action, double x, double y, int n) {
-        return new Enregistrement(action,x,y,n);
+    public void createLog(String action, Ellipse2D.Double circ) {
+        this.addPreviousState(new Enregistrement(action,circ));
+        this.clearNextStates();
     }
     
-    public Enregistrement createLog(String action, MyLine line, int n) {
-        return new Enregistrement(action,line,n);
+    public void createLog(String action, MyLine line) {
+        this.addPreviousState(new Enregistrement(action,line));
+        this.clearNextStates();
     }
     
-    public Enregistrement createLog(String action, String currentLbl, String newLbl, int n) {
-        return new Enregistrement(action,currentLbl,newLbl,n);
+    public void createLog(String action, Ellipse2D.Double circ, String currentLbl, String newLbl) {
+        this.addPreviousState(new Enregistrement(action,circ,currentLbl,newLbl));
+        this.clearNextStates();
     }
     
-    public Enregistrement createLog(String action, double x, double y, double x2, double y2, int n) {
-        return new Enregistrement(action,x,y,x2,y2,n);
+    public void createLog(String action, MyLine line, String currentLbl, String newLbl) {
+        this.addPreviousState(new Enregistrement(action,line,currentLbl,newLbl));
+        this.clearNextStates();
+    }
+    
+    public void createLog(String action, Ellipse2D.Double circ, double x, double y, double x2, double y2) {
+        this.addPreviousState(new Enregistrement(action,circ,x,y,x2,y2));
+        this.clearNextStates();
+    }
+    
+    public void createLog(String action, MyLine line, Ellipse2D.Double fromClou, Ellipse2D.Double toClou) {
+        this.addPreviousState(new Enregistrement(action,line,fromClou,toClou));
+        this.clearNextStates();
     }
 
     public Enregistrement getPreviousState(){

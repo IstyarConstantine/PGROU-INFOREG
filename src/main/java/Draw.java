@@ -156,9 +156,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                         if (currentCircleIndex < 0 && currentArcIndex < 0){ // not inside a circle
                             add(x, y);
                             // On ajoute l'action à la pile
-                            Enregistrement prev = transitions.createLog("addCircle", x,y,numOfCircles-1);
-                            transitions.addPreviousState(prev);
-                            transitions.clearNextStates();
+                            transitions.createLog("addCircle", circ[numOfCircles-1]);
                         }
                     }
                     // Si on souhaite ajouter un label à un Nœud :
@@ -170,9 +168,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                                 circLbl[currentCircleIndex] = lbl;
                                 repaint();
                                 // On ajoute l'action à la pile
-                                Enregistrement prev = transitions.createLog("updateLbl", currentLbl,lbl ,currentCircleIndex);
-                                transitions.addPreviousState(prev);
-                                transitions.clearNextStates();
+                                transitions.createLog("updateLbl", getCirc()[currentCircleIndex],currentLbl,lbl);
                             } catch (Exception NullPointerException){
                                 System.out.println("Opération annulée");
                             }
@@ -182,12 +178,11 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                                 try {
                                     int pds = Integer.parseInt(text);
                                     int currentPds = lines.get(currentArcIndex).getPoids();
-                                    lines.get(currentArcIndex).setPoids(pds);
+                                    MyLine line = lines.get(currentArcIndex);
+                                    line.setPoids(pds);
                                     repaint();
                                     // On ajoute l'action à la pile
-                                    Enregistrement prev = transitions.createLog("updatePds", Integer.toString(currentPds), text, currentArcIndex);
-                                    transitions.addPreviousState(prev);
-                                    transitions.clearNextStates();
+                                    transitions.createLog("updatePds",line,Integer.toString(currentPds),text);
                                 } catch (Exception e) {
                                     System.out.println("Pas un entier !");
                                 }
@@ -222,9 +217,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                                     repaint();
                                     //fromPoint = null;
                                     // On ajoute l'action à la pile
-                                    Enregistrement prev = transitions.createLog("addLine",newLine, numOfLines-1);
-                                    transitions.addPreviousState(prev);
-                                    transitions.clearNextStates();
+                                    transitions.createLog("addLine",newLine);
                                 } catch (Exception e) {
                                     System.out.println("Pas un entier !");
                                     //fromPoint = null;
@@ -234,11 +227,10 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                             } else {
                                 MyLine newLine = new MyLine(fromPoint,p,1,currentColor);
                                 addLine(newLine);
-                                fromPoint = null;
                                 // On ajoute l'action à la pile
-                                Enregistrement prev = transitions.createLog("addLine",newLine, numOfLines-1);
-                                transitions.addPreviousState(prev);
-                                transitions.clearNextStates();
+                                transitions.createLog("addLine",newLine);
+                                //
+                                fromPoint = null;
                             }    
                         }
                     }
@@ -258,18 +250,15 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                             // On ajoute l'action à la pile
                             // On ajoute les arcs qui seront supprimés
                             if(numOfLines > 0){
-                                for (MyLine l : lines){
+                                for (int i=0;i<lines.size(); i++){
+                                    MyLine l = lines.get(i);
                                     if (l.getFrom().equals(circ[currentCircleIndex]) || l.getTo().equals(circ[currentCircleIndex])){
-                                        Enregistrement prev = transitions.createLog("deleteLine", l, currentCircleIndex);
-                                        transitions.addPreviousState(prev);
-                                        transitions.clearNextStates();
+                                        transitions.createLog("deleteLine",l);
                                     }
                                 }
                             }
-                            // La recreation du noeud sera placée au haut de la pile
-                            Enregistrement prev = transitions.createLog("deleteCircle",x, y, currentCircleIndex);
-                            transitions.addPreviousState(prev);
-                            transitions.clearNextStates();
+                            // La reconstruction du noeud sera placée au haut de la pile
+                            transitions.createLog("deleteCircle",getCirc()[currentCircleIndex]);
                             //
                             remove(currentCircleIndex);
                         }
@@ -277,9 +266,8 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                     if (Interface.activeTool==Interface.ARC_TOOL) {
                         if (evt.getClickCount() >= 2 && currentArcIndex >= 0){
                             // On ajoute l'action à la pile
-                            Enregistrement prev = transitions.createLog("deleteLine",lines.get(currentArcIndex), currentArcIndex);
-                            transitions.addPreviousState(prev);
-                            transitions.clearNextStates();
+                            MyLine toDelete = lines.get(currentArcIndex);
+                            transitions.createLog("deleteLine",toDelete);
                             //
                             removeArc(currentArcIndex);
                         }
@@ -294,9 +282,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                                     addLine(arc);
                                     repaint();
                                     // On ajoute l'action à la pile
-                                    Enregistrement prev = transitions.createLog("addLine",arc, numOfLines-1);
-                                    transitions.addPreviousState(prev);
-                                    transitions.clearNextStates();
+                                    transitions.createLog("addLine",arc);
                                 } catch (Exception e) {
                                     System.out.println("Pas un entier !");
                                     
@@ -309,9 +295,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                                 arc.setClou(clou);
                                 addLine(arc);
                                 // On ajoute l'action à la pile
-                                Enregistrement prev = transitions.createLog("addLine",arc, numOfLines-1);
-                                transitions.addPreviousState(prev);
-                                transitions.clearNextStates();
+                                transitions.createLog("addLine",arc);
                             }
                         }
                     }
@@ -424,6 +408,26 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
             repaint();
         }
     }
+	
+	public int find(Ellipse2D.Double circ){
+        boolean trouve = false;
+        int n = 0;
+        Ellipse2D.Double comp;
+        while ((n<this.numOfCircles) && (!trouve)){
+            comp = this.circ[n];
+            if (
+                Double.compare(comp.x, circ.x) == 0 && 
+                Double.compare(comp.y, circ.y) == 0
+            ){
+                trouve = true;
+                return n;
+            }
+            else {
+                n++;
+            }
+        }
+        return -1;
+    }
     
     /**
      * Ajoute une ligne dans la ArrayList lines et actualise l'affichage
@@ -517,10 +521,10 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
             int x = event.getX();
             int y = event.getY();
             if (currentCircleIndex >= 0) {
+                //double oldX = circ[currentCircleIndex].x;
+                //double oldY = circ[currentCircleIndex].y;
                 // On ajoute l'action à la pile
-                Enregistrement prev = transitions.createLog("moveCircle", circ[currentCircleIndex].x, circ[currentCircleIndex].y, x, y,currentCircleIndex );
-                transitions.addPreviousState(prev);
-                transitions.clearNextStates();
+                //transitions.createLog("moveCircle", circ[currentCircleIndex],oldX,oldY, x, y);
                 //
                 circ[currentCircleIndex].x = x;
                 circ[currentCircleIndex].y = y;
@@ -532,12 +536,12 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
             int y = event.getY();
             if (currentArcIndex >= 0) {
                 MyLine line = lines.get(currentArcIndex);
+                Ellipse2D.Double newClou = new Ellipse2D.Double(x,y,MyLine.RCLOU,MyLine.RCLOU);
                 // On ajoute l'action à la pile
-                Enregistrement prev = transitions.createLog("moveLine", line.getClou().x, line.getClou().y, x, y, currentArcIndex);
-                transitions.addPreviousState(prev);
-                transitions.clearNextStates();
+                //Ellipse2D.Double prevClou = new Ellipse2D.Double(line.getClou().x,line.getClou().y,MyLine.RCLOU,MyLine.RCLOU);
+                //transitions.createLog("moveLine",line,prevClou,newClou);
                 //
-                line.setClou(new Ellipse2D.Double(x,y,MyLine.RCLOU,MyLine.RCLOU));
+                line.setClou(newClou);
                 repaint();
             }
         }    
