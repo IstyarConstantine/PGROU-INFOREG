@@ -7,6 +7,7 @@ Date de dernière modification : 08/03/2022
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -104,6 +105,8 @@ public abstract class Interface{
     
     /** Attribut pour la taille des Noeuds. */
     protected static int taille ;
+    /** Attribut pour l'épaisseur des Arcs. */
+    protected static int epaisseur ;
 
         /** Actions */
     /** Action de sauvegarde du graphe dans une sauvegarde existante */
@@ -253,25 +256,47 @@ public abstract class Interface{
         toolBarButtons.addSeparator();
         
         //Taille
-        final SpinnerNumberModel strokeModel = new SpinnerNumberModel(20,1,100,1);
-        JSpinner strokeSize = new JSpinner(strokeModel);
-        ChangeListener strokeListener = new ChangeListener() {
+        final SpinnerNumberModel spinnerNumTaille = new SpinnerNumberModel(20,1,100,1);
+        JSpinner spinnerTaille = new JSpinner(spinnerNumTaille);
+        ChangeListener listenerTaille = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent arg0) {
-                Object o = strokeModel.getValue();
+                Object o = spinnerNumTaille.getValue();
                 Integer i = (Integer)o; 
                 taille = i;
                 d.tailleCirc();
                 } 
         };
-        strokeSize.addChangeListener(strokeListener);
-        strokeSize.setMaximumSize(strokeSize.getPreferredSize());
-        JLabel strokeLabel = new JLabel(" Taille");
-        strokeLabel.setLabelFor(strokeSize);
-
-        toolBarButtons.add(strokeLabel);
-        toolBarButtons.add(strokeSize);
+        spinnerTaille.addChangeListener(listenerTaille);
+        spinnerTaille.setMaximumSize(spinnerTaille.getPreferredSize());
+        JLabel spinnerTailleLabel = new JLabel(" Taille Noeuds");
+        spinnerTailleLabel.setLabelFor(spinnerTaille);
+        toolBarButtons.add(spinnerTailleLabel);
+        toolBarButtons.add(spinnerTaille);
+        spinnerTaille.setAlignmentX(JSpinner.LEFT_ALIGNMENT);
+        //ajoute un séparateur de taille par défaut
+        toolBarButtons.addSeparator();
         
+        //Epaisseur
+        final SpinnerNumberModel spinnerNumEpaisseur = new SpinnerNumberModel(20,1,100,1);
+        JSpinner spinnerEpaisseur = new JSpinner(spinnerNumEpaisseur);
+        ChangeListener strokeListener = new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent arg0) {
+                Object o = spinnerNumEpaisseur.getValue();
+                Integer i = (Integer)o; 
+                epaisseur= i;
+                d.epaisseurLines();
+                } 
+        };
+        spinnerEpaisseur.addChangeListener(strokeListener);
+        spinnerEpaisseur.setMaximumSize(spinnerEpaisseur.getPreferredSize());
+        JLabel spinnerEpaisseurLabel = new JLabel(" Epaisseur Arcs");
+        spinnerEpaisseurLabel.setLabelFor(spinnerEpaisseur);
+
+        toolBarButtons.add(spinnerEpaisseurLabel);
+        toolBarButtons.add(spinnerEpaisseur);
+        spinnerEpaisseur.setAlignmentX(JSpinner.LEFT_ALIGNMENT);
         //ajoute un séparateur de taille par défaut
         toolBarButtons.addSeparator();
         
@@ -346,17 +371,17 @@ public abstract class Interface{
         };
 
         select.addActionListener(toolGroupListener);
-        //select activé au démarrage
-        select.setSelected(true);
+        //select.setSelected(true);//select activé au démarrage
         noeud.addActionListener(toolGroupListener);
         arc.addActionListener(toolGroupListener);
         label.addActionListener(toolGroupListener);
         
         edition.addActionListener(modeGroupListener);
-        //edition activé au démarrage
-        edition.setSelected(true);
+        //edition.setSelected(true);//edition activé au démarrage
         traitement.addActionListener(modeGroupListener);
         
+        //toolBarButtons.setLayout(new FlowLayout(FlowLayout.LEFT));
+        toolBarButtons.setAlignmentX(FlowLayout.CENTER);
         toolBarButtons.setFloatable(false);
         toolBarButtons.setBorderPainted(true);
     }

@@ -557,17 +557,28 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
     }
     
     /** 
-     * Méthode permettant de modifier la taille des cercles et la linewidth des arcs
+     * Méthode permettant de modifier la taille des noeuds
      */
     public void tailleCirc(){
         if(numOfCircles>0){
             double factor = (float) Interface.taille/20;
             circleW = factor*Draw.RINIT ;
-            lineWidth = (float) factor*Draw.LINIT;
+            //lineWidth = (float) factor*Draw.LINIT;
             for (int i = 0; i < numOfCircles; i++) {
                 circ[i].height = circleW ;
                 circ[i].width = circleW ;
             }
+            repaint();
+        }
+    }
+    
+    /** 
+     * Méthode permettant de modifier l'épaisseur des arcs et des périmètres des noeuds
+     */
+    public void epaisseurLines(){
+        if(numOfCircles>0){
+            double factor = (float) Interface.epaisseur/20;
+            lineWidth = (float) factor*Draw.LINIT;
             repaint();
         }
     }
