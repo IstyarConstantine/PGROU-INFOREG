@@ -6,7 +6,6 @@ Date de dernière modification : 25/03/2022
 =============================================*/
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.JOptionPane;

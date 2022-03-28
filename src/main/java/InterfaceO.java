@@ -58,7 +58,9 @@ public class InterfaceO extends Interface implements Connexe {
         }
         @Override
             public void actionPerformed(ActionEvent ea) {
-                //TO DO: implémenter Ford Fulkerson à partir de la classe MaxFlow //
+                activeTraitement = Interface.FORD_FULKERSON_TRAITEMENT;
+                d.reinit();
+                d.repaint();
             }
     };
 

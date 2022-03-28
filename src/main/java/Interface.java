@@ -102,6 +102,7 @@ public abstract class Interface{
     public static final int PRIM_TRAITEMENT = 21;
     public static final int DIJKSTRA_TRAITEMENT = 22;
     public static final int KRUSKAL_TRAITEMENT = 23;
+    public static final int FORD_FULKERSON_TRAITEMENT = 24;
     
     /** Attribut pour la taille des Noeuds. */
     protected static int taille ;
