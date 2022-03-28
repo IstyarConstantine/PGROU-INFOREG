@@ -7,6 +7,8 @@ Date de dernière modification : 28/03/2022
 
 import java.util.LinkedList;
 
+import javax.swing.JOptionPane;
+
 public class FordFulkerson implements Traitement{
     
 
@@ -16,7 +18,7 @@ public class FordFulkerson implements Traitement{
       store the path */
     
     
-    boolean bfs(int rGraph[][], int s, int t, int parent[], int V)
+    private boolean bfs(int rGraph[][], int s, int t, int parent[], int V)
     {
         // Create a visited array and mark all vertices as
         // not visited
@@ -61,7 +63,7 @@ public class FordFulkerson implements Traitement{
 
     // Returns tne maximum flow from s to t in the given
     // graph
-    int fordFulkerson(Draw d, int src, int dest)
+    public void fordFulkerson(Draw d, int src, int dest)
     {
         
         
@@ -97,7 +99,7 @@ public class FordFulkerson implements Traitement{
             // along the path filled by BFS. Or we can say
             // find the maximum flow through the path found.
             int path_flow = Integer.MAX_VALUE;
-            for (v = dest; v != dest; v = parent[v]) {
+            for (v = dest; v != src; v = parent[v]) {
                 u = parent[v];
                 path_flow
                     = Math.min(path_flow, rGraph[u][v]);
@@ -114,9 +116,8 @@ public class FordFulkerson implements Traitement{
             // Add path flow to overall flow
             max_flow += path_flow;
         }
-
-        // Return the overall flow
-        return max_flow;
+        JOptionPane.showMessageDialog(null, "Le flot maximal du graphe entre les sommets " + d.getCircLbl()[src] +" et " + d.getCircLbl()[dest] + " est de " + max_flow +".", 
+                                        "Ford-Fulkerson - Flot maximal", JOptionPane.INFORMATION_MESSAGE);
     }
 }
 

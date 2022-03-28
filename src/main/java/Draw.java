@@ -301,7 +301,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                     }
                 }
                 if (Interface.mode==Interface.TRAITEMENT_MODE) {
-                    if (Interface.activeTraitement==Interface.DIJKSTRA_TRAITEMENT){
+                    if ((Interface.activeTraitement==Interface.DIJKSTRA_TRAITEMENT) || (Interface.activeTraitement==Interface.FORD_FULKERSON_TRAITEMENT)){
                         int x = evt.getX();
                         int y = evt.getY();
                         if (src == -1){
@@ -309,7 +309,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                         } else if (dest == -1){
                             dest = getRec(x,y);
                             if (dest != -1) {
-                                dijkstra();
+                                traitement();
                             } else {
                                 src = -1;
                             }
@@ -552,14 +552,19 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
             this.lines.get(i).setC(Color.BLUE);
         }
     }
-    public void dijkstra(){
+
+    public void traitement(){
         reinit();
         repaint();
-        (new Dijkstra()).dijkstra(this, src, dest);
+        if (Interface.activeTraitement == Interface.DIJKSTRA_TRAITEMENT){
+            (new Dijkstra()).dijkstra(this, src, dest);
+        } else if (Interface.activeTraitement == Interface.FORD_FULKERSON_TRAITEMENT){
+            (new FordFulkerson()).fordFulkerson(this, src, dest);
+        }
         this.src = -1;
         this.dest = -1;
     }
-    
+
     /** 
      * Méthode permettant de modifier la taille des noeuds
      */
