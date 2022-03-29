@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -68,6 +69,20 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
     
     /** Graphe représenté par le Draw */
     private Graphe G = null;
+    
+    //Select many elements
+    /** coordonées du rectangle de selection */
+    private int selectXstart ;
+    private int selectYstart ;
+    private int selectXend ;
+    private int selectYend ;
+    /** rectangle de selection */
+    private Rectangle zoneR ;
+    /**  */
+    private static boolean drawZone = false ;
+    /** listes de booléens - éléments à déplacer en même temps */
+    private boolean[] multiSelecCirc = new boolean[MAX];
+    private boolean[] multiSelecArc = new boolean[MAX];
 
     public void setDest(int i) {
         this.dest = i;
@@ -202,6 +217,25 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                             fromPoint = circ[currentCircleIndex];
                         }
                     }
+                    if (Interface.activeTool==Interface.SELECT_TOOL){
+                        if (currentCircleIndex < 0 && currentArcIndex < 0){//not on circle or arc
+                            for(int i = 0; i< getNumOfCircles() ; i++ ){
+                                multiSelecCirc[i]=false;
+                            } 
+                            for(int i = 0; i<getNumOfLines(); i++){
+                                multiSelecArc[i]=false;
+                            }
+                            selectXstart = x;
+                            selectYstart = y;
+                        }
+                    }else{
+                        for(int i = 0; i< getNumOfCircles() ; i++ ){
+                           multiSelecCirc[i]=false;
+                        }                            
+                        for(int i = 0; i<getNumOfLines(); i++){
+                            multiSelecArc[i]=false;
+                        } 
+                    }                    
                 }
             }
 
@@ -242,6 +276,23 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                             }    
                         }
                     }
+                }if (Interface.activeTool==Interface.SELECT_TOOL){
+                    drawZone = false;
+                    for(int i = 0; i< getNumOfCircles() ; i++ ){
+                        int x = (int) circ[i].getCenterX() ;
+                        int y = (int) circ[i].getCenterY() ;
+                        if (zoneR.contains(x,y)){
+                            multiSelecCirc[i]=true;
+                        }
+                    }
+                    for(int i = 0; i< getNumOfLines() ; i++ ){
+                        int x =  lines.get(i).getClouPoint().x;
+                        int y =  lines.get(i).getClouPoint().y;
+                        if (zoneR.contains(x,y)){
+                            multiSelecArc[i]=true;
+                        }
+                    }
+                    repaint();
                 }
             }
             
@@ -307,6 +358,16 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                             }
                         }
                     }
+                                        if (Interface.activeTool==Interface.SELECT_TOOL){
+                        if (currentCircleIndex < 0 && currentArcIndex < 0){//not on circle or arc
+                            for(int i = 0; i< getNumOfCircles() ; i++ ){
+                                multiSelecCirc[i]=false;
+                            } 
+                            for(int i = 0; i< getNumOfLines() ; i++ ){
+                                multiSelecArc[i]=false;
+                            }  
+                        }
+                    }
                 }
                 if (Interface.mode==Interface.TRAITEMENT_MODE) {
                     if ((Interface.activeTraitement==Interface.DIJKSTRA_TRAITEMENT) || (Interface.activeTraitement==Interface.FORD_FULKERSON_TRAITEMENT)){
@@ -351,8 +412,14 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                 int y2 = lines.get(i).getToPoint().y;
                 ((Graphics2D) g).drawLine(x1,y1,x3,y3);
                 ((Graphics2D) g).drawLine(x3,y3,x2,y2);
-                ((Graphics2D) g).setPaint(Interface.colorBg); //clous set color background
-                ((Graphics2D) g).draw(lines.get(i).getClou());
+                if(multiSelecArc[i]){
+                    ((Graphics2D) g).setPaint(Color.GREEN);
+                    ((Graphics2D) g).draw(lines.get(i).getClou());
+                }else{
+                    ((Graphics2D) g).setPaint(Interface.colorBg); //clous set color background
+                    ((Graphics2D) g).draw(lines.get(i).getClou());
+                }
+
                 ((Graphics2D) g).setPaint(lines.get(i).getC()); //reset color pour poids
                 if (oriente==Draw.ORIENTE){
                     int[] t = new int[4];
@@ -365,8 +432,13 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
             }   
         }
         for (int i = 0; i < numOfCircles; i++) {
-            ((Graphics2D) g).setPaint(Color.BLACK);
-            ((Graphics2D) g).draw(circ[i]); 
+            if(multiSelecCirc[i]){
+                ((Graphics2D) g).setPaint(Color.GREEN);
+                ((Graphics2D) g).draw(circ[i]); 
+            }else{
+                ((Graphics2D) g).setPaint(Color.BLACK);
+                ((Graphics2D) g).draw(circ[i]); 
+            }
             ((Graphics2D) g).setPaint(Color.WHITE);
             ((Graphics2D) g).fill(circ[i]);
             ((Graphics2D) g).setPaint(Color.BLACK);
@@ -374,7 +446,10 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                     (int) circ[i].getCenterX(),
                     (int) circ[i].getCenterY() + 20);
         }
-    }
+        if(this.drawZone){
+            ((Graphics2D) g).draw(this.zoneR);
+        }
+    }    
  
     /**
      * Vérifie que l'on clique sur un cercle et donne son indice dans la liste circ
@@ -529,31 +604,95 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
             int x = event.getX();
             int y = event.getY();
             if (currentCircleIndex >= 0) {
-                //double oldX = circ[currentCircleIndex].x;
-                //double oldY = circ[currentCircleIndex].y;
-                // On ajoute l'action à la pile
-                //transitions.createLog("moveCircle", circ[currentCircleIndex],oldX,oldY, x, y);
-                //
-                circ[currentCircleIndex].x = x;
-                circ[currentCircleIndex].y = y;
-                repaint();
+                if(multiSelecCirc[currentCircleIndex]){
+                    double transx;
+                    transx = x - circ[currentCircleIndex].x;
+                    double transy;
+                    transy = y - circ[currentCircleIndex].y;
+                    
+                    for(int i = 0; i< getNumOfCircles() ; i++){
+                        if(multiSelecCirc[i]){
+                            circ[i].x = circ[i].x + transx;
+                            circ[i].y = circ[i].y + transy;
+                        }
+                    }
+                    for(int i = 0; i<getNumOfLines() ; i++){
+                        if(multiSelecArc[i]){
+                            double cloux = lines.get(i).getClou().x + transx ;
+                            double clouy = lines.get(i).getClou().y + transy ;
+                            lines.get(i).setClou(new Ellipse2D.Double(cloux,clouy,MyLine.RCLOU,MyLine.RCLOU));
+                        } 
+                    }
+                    repaint();
+                }else{               
+                    //double oldX = circ[currentCircleIndex].x;
+                    //double oldY = circ[currentCircleIndex].y;
+                    // On ajoute l'action à la pile
+                    //transitions.createLog("moveCircle", circ[currentCircleIndex],oldX,oldY, x, y);
+                    //
+                    circ[currentCircleIndex].x = x;
+                    circ[currentCircleIndex].y = y;
+                    zoneR = new Rectangle(Integer.MIN_VALUE,Integer.MIN_VALUE,0,0); //permet d'éviter qu'un ensemble de points soient toujours sélectionner
+                                                                                    //après les avoir déselectionner en cliquant a cote
+                    repaint();
+                }
             }
         } 
         if ((Interface.activeTool==Interface.ARC_TOOL || Interface.activeTool==Interface.SELECT_TOOL)&& Interface.mode==Interface.EDITION_MODE) {
             int x = event.getX();
             int y = event.getY();
             if (currentArcIndex >= 0) {
-                MyLine line = lines.get(currentArcIndex);
-                Ellipse2D.Double newClou = new Ellipse2D.Double(x,y,MyLine.RCLOU,MyLine.RCLOU);
-                // On ajoute l'action à la pile
-                //Ellipse2D.Double prevClou = new Ellipse2D.Double(line.getClou().x,line.getClou().y,MyLine.RCLOU,MyLine.RCLOU);
-                //transitions.createLog("moveLine",line,prevClou,newClou);
-                //
-                line.setClou(newClou);
-                repaint();
+                if(multiSelecArc[currentArcIndex]){
+                    double transx;
+                    transx = x - lines.get(currentArcIndex).getClouPoint().x;
+                    double transy;
+                    transy = y - lines.get(currentArcIndex).getClouPoint().y;
+                    
+                    for(int i = 0; i< getNumOfCircles() ; i++){
+                        if(multiSelecCirc[i]){
+                            circ[i].x = circ[i].x + transx;
+                            circ[i].y = circ[i].y + transy;
+                        }
+                    }
+                    for(int i = 0; i<getNumOfLines() ; i++){
+                        if(multiSelecArc[i]){
+                            double cloux = lines.get(i).getClou().x + transx ;
+                            double clouy = lines.get(i).getClou().y + transy ;
+                            lines.get(i).setClou(new Ellipse2D.Double(cloux,clouy,MyLine.RCLOU,MyLine.RCLOU));
+                        } 
+                    }
+                    repaint();
+                }else{
+                    MyLine line = lines.get(currentArcIndex);
+                    Ellipse2D.Double newClou = new Ellipse2D.Double(x,y,MyLine.RCLOU,MyLine.RCLOU);
+                    // On ajoute l'action à la pile
+                    //Ellipse2D.Double prevClou = new Ellipse2D.Double(line.getClou().x,line.getClou().y,MyLine.RCLOU,MyLine.RCLOU);
+                    //transitions.createLog("moveLine",line,prevClou,newClou);
+                    //
+                    line.setClou(newClou);
+                    repaint();
+                }
             }
         }    
-    }
+        if (Interface.activeTool==Interface.SELECT_TOOL) {
+            selectXend = event.getX();
+            selectYend = event.getY();
+            
+            if (currentCircleIndex < 0 && currentArcIndex < 0) {
+                int px = Math.min(selectXstart,selectXend);
+                int py = Math.min(selectYstart,selectYend);
+                int pw = Math.abs(selectXstart-selectXend);
+                int ph = Math.abs(selectYstart-selectYend);
+                this.zoneR = new Rectangle(px, py, pw, ph);
+                this.drawZone = true;
+                repaint();
+            }
+        }
+        if (Interface.mode==Interface.TRAITEMENT_MODE) {
+            this.drawZone = false;
+            repaint();
+        }
+    }  
 
     public void reinit(){
         for (int i=0;i<this.numOfLines;i++){
