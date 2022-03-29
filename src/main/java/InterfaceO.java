@@ -104,17 +104,16 @@ public class InterfaceO extends Interface implements Connexe {
 
     public final AbstractAction ExportGraphO = new AbstractAction() {
         {
-            putValue(Action.NAME,"Export Graphe");
-            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_G);
-            putValue(Action.SHORT_DESCRIPTION,"Exporte au format classe graphe (CTRL+G)");
+            putValue(Action.NAME,"Export Matrice d'Adjacence");
+            putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
+            putValue(Action.SHORT_DESCRIPTION,"Affiche la matrice d'adjacence du graphe (CTRL+A)");
             putValue(Action.ACCELERATOR_KEY,
-                    KeyStroke.getKeyStroke(KeyEvent.VK_G,KeyEvent.CTRL_DOWN_MASK));
+                    KeyStroke.getKeyStroke(KeyEvent.VK_A,KeyEvent.CTRL_DOWN_MASK));
         }
         @Override
             public void actionPerformed(ActionEvent ea) {
-                if (mode==Interface.TRAITEMENT_MODE){
-                    JOptionPane.showMessageDialog(d, "La matrice d'adjacence du graphe orienté est :\n\n" + d.getG().afficher(), "Matrice d'adjacence", JOptionPane.INFORMATION_MESSAGE);
-                }
+                d.exportGraphe();
+                JOptionPane.showMessageDialog(d, "La matrice d'adjacence du graphe orienté est :\n\n" + d.getG().afficher(), "Matrice d'adjacence", JOptionPane.INFORMATION_MESSAGE);
             }
     };
 
