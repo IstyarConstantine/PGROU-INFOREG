@@ -96,13 +96,13 @@ public class Dijkstra implements Traitement{
             d.reinit();
             JOptionPane.showMessageDialog(null, "Il n'existe pas de plus court chemin entre les sommets "
                                             + d.getCircLbl()[src] + " et " + d.getCircLbl()[dest]+ ".", 
-                                            "PCC", JOptionPane.INFORMATION_MESSAGE);
+                                            "PCC - Dijkstra", JOptionPane.INFORMATION_MESSAGE);
         } else {
             d.repaint();
             JOptionPane.showMessageDialog(null, "Il existe un plus court chemin entre les sommets "
                                                 + d.getCircLbl()[src] + " et " + d.getCircLbl()[dest]
                                                 + ", de distance " + dist[dest] + ".", 
-                                                "PCC", JOptionPane.INFORMATION_MESSAGE);
+                                                "PCC - Dijkstra", JOptionPane.INFORMATION_MESSAGE);
         }
     }   
 

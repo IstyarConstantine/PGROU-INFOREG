@@ -69,6 +69,14 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
     /** Graphe représenté par le Draw */
     private Graphe G = null;
 
+    public void setDest(int i) {
+        this.dest = i;
+    }
+
+    public void setSrc(int i) {
+        this.src = i;
+    }
+
     public Graphe getG(){
         return this.G;
     }
@@ -605,4 +613,5 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                 break;
         }
     }
+
 }
