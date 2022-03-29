@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 /*=============================================
 Classe GOriente définissant un Graphe orienté
 Sous classe de la classe abstraite Graphe
@@ -20,29 +18,6 @@ public class GOriente extends Graphe {
 
     public GOriente(Draw d){
         super(d);
-    }
-
-    @Override
-    /**
-     * Méthode permettant de copier un GOriente
-     * @return nouv = copie du graphe
-     */
-    public GOriente copie(){
-        GOriente nouv = new GOriente();
-        int n = this.getNbsommets();
-        int[][] mat = new int[nbmax][nbmax];
-        for (int i=0;i<n;i++){
-            for (int j=0;j<n;j++) {
-                mat[i][j] = this.getAdj()[i][j];
-            }
-        }
-        ArrayList<Noeud> N = this.getLstNoeuds();
-        ArrayList<Arc> A = this.getLstArcs();
-        nouv.setAdj(mat);
-        nouv.setNbsommets(n);
-        nouv.setLstArcs(A);
-        nouv.setLstNoeuds(N);
-        return nouv;
     }
     
     @Override

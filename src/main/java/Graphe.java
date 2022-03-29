@@ -28,8 +28,6 @@ public abstract class Graphe {
      */
     protected int[][] adj;
 
-    protected ArrayList<Noeud> lstNoeuds;
-
     protected ArrayList<Arc> lstArcs;
 
     /**
@@ -39,14 +37,12 @@ public abstract class Graphe {
         this.adj = new int[Graphe.nbmax][Graphe.nbmax];
         this.nbsommets = 0;
         this.lstArcs = new ArrayList<Arc>();
-        this.lstNoeuds = new ArrayList<Noeud>();
     }
 
     public Graphe(Draw d){
         this.nbsommets = 0;
         this.adj = new int[Graphe.nbmax][Graphe.nbmax];
         this.lstArcs = new ArrayList<Arc>();
-        this.lstNoeuds = new ArrayList<Noeud>();
         for (int i=0;i<d.getNumOfCircles();i++){
             addSommet(d.getCircLbl()[i],i);
         }
@@ -58,14 +54,6 @@ public abstract class Graphe {
             int dest = d.findEllipse(l.getToPoint().x,l.getToPoint().y);
             addArc(src, dest, p, i);
         }
-    }
-
-    public ArrayList<Noeud> getLstNoeuds() {
-        return lstNoeuds;
-    }
-
-    public void setLstNoeuds(ArrayList<Noeud> lstNoeuds) {
-        this.lstNoeuds = lstNoeuds;
     }
 
     public ArrayList<Arc> getLstArcs() {
@@ -147,12 +135,6 @@ public abstract class Graphe {
         }
         return aux;
     }
-    
-    /**
-     * Méthode permettant de copier le Graphe sans créer d'alias
-     * @return un Graphe
-     */
-    public abstract Graphe copie();
 
     /**
      * Méthode permettant d'ajouter un sommet si cela est encore possible
@@ -166,9 +148,6 @@ public abstract class Graphe {
                 this.adj[i][this.nbsommets] = 0;
                 this.adj[this.nbsommets][i] = 0;
             }
-            Noeud s = new Noeud(n,ind);
-            s.setId(this.nbsommets);
-            this.lstNoeuds.add(s);
             ++this.nbsommets;
         } else {
             System.out.println("Impossible d'ajouter un sommet supplémentaire");

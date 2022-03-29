@@ -57,6 +57,8 @@ public class InterfaceO extends Interface implements Connexe {
                 activeTraitement = Interface.DIJKSTRA_TRAITEMENT;
                 d.reinit();
                 d.repaint();
+                JOptionPane.showMessageDialog(null, "Sélectionnez un sommet de départ et un sommet d'arrivée pour calculer le plus court chemin entre les deux s'il existe.", 
+                                            "Dijkstra - PCC", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     };
@@ -78,6 +80,8 @@ public class InterfaceO extends Interface implements Connexe {
                 activeTraitement = Interface.FORD_FULKERSON_TRAITEMENT;
                 d.reinit();
                 d.repaint();
+                JOptionPane.showMessageDialog(null, "Sélectionnez un sommet source et un sommet cible pour calculer le flot maximal entre les deux.", 
+                                        "Ford-Fulkerson - Flot maximal", JOptionPane.INFORMATION_MESSAGE);
             }
     };
 
