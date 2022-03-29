@@ -54,8 +54,8 @@ public abstract class Graphe {
         for (int i=0;i<d.getNumOfLines();i++){
             MyLine l = lines.get(i);
             int p = l.getPoids();
-            int src = d.getRec(l.getFromPoint().x,l.getFromPoint().y);
-            int dest = d.getRec(l.getToPoint().x,l.getToPoint().y);
+            int src = d.findEllipse(l.getFromPoint().x,l.getFromPoint().y);
+            int dest = d.findEllipse(l.getToPoint().x,l.getToPoint().y);
             addArc(src, dest, p, i);
         }
     }

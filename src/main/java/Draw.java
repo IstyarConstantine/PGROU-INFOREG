@@ -172,7 +172,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                     int x = evt.getX();
                     int y = evt.getY();
                     // Vérifie si on clique où non sur un cercle existant
-                    currentCircleIndex = getRec(x, y);
+                    currentCircleIndex = findEllipse(x, y);
                     currentArcIndex = getArc(x,y);
                     // Si on souhaite ajouter un Nœud :
                     if (Interface.activeTool==Interface.NOEUD_TOOL) {
@@ -245,7 +245,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                     int x = evt.getX();
                     int y = evt.getY();
                     // Vérifie si on clique où non sur un cercle existant
-                    currentCircleIndex = getRec(x, y);
+                    currentCircleIndex = findEllipse(x, y);
                     if (Interface.activeTool==Interface.ARC_TOOL){
                         //ATTENTION : il faudra prendre le compte le cas où on pointe vers le meme cercle
                         if ((currentCircleIndex >= 0) && (fromPoint!=null) && (!fromPoint.equals(circ[currentCircleIndex]))) { // inside circle
@@ -302,7 +302,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                     int x = evt.getX();
                     int y = evt.getY();
                     currentArcIndex = getArc(x, y);
-                    currentCircleIndex = getRec(x, y);
+                    currentCircleIndex = findEllipse(x, y);
                     // Si on clique deux fois sur un Nœud, on le supprime
                     if (Interface.activeTool==Interface.NOEUD_TOOL && currentCircleIndex >= 0) {
                         if (evt.getClickCount() >= 2) {
@@ -374,9 +374,9 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                         int x = evt.getX();
                         int y = evt.getY();
                         if (src == -1){
-                            src = getRec(x,y);
+                            src = findEllipse(x,y);
                         } else if (dest == -1){
-                            dest = getRec(x,y);
+                            dest = findEllipse(x,y);
                             if (dest != -1) {
                                 traitement();
                             } else {
@@ -446,7 +446,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                     (int) circ[i].getCenterX(),
                     (int) circ[i].getCenterY() + 20);
         }
-        if(this.drawZone){
+        if(Draw.drawZone){
             ((Graphics2D) g).draw(this.zoneR);
         }
     }    
@@ -457,7 +457,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
      * @param y = coordonnée y du pointeur de la souris
      * @return -1 si on ne clique pas sur un cercle, l'indice du cercle dans la liste sinon
      */
-    public int getRec(int x, int y) {
+    public int findEllipse(int x, int y) {
         for (int i = 0; i < numOfCircles; i++) {
             if (circ[i].contains(x, y)) { // inside a circle
                 return i;
@@ -590,7 +590,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
     public void mouseMoved(MouseEvent event) {
         int x = event.getX();
         int y = event.getY();
-        if (getRec(x, y) >= 0 || getArc(x, y) >= 0) {
+        if (findEllipse(x, y) >= 0 || getArc(x, y) >= 0) {
             setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
         } else {
             setCursor(Cursor.getDefaultCursor());
@@ -600,7 +600,7 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
     /** Déplace un cercle et les lignes qui lui sont rattachées */
     @Override
     public void mouseDragged(MouseEvent event) {
-        if (Interface.activeTool==Interface.NOEUD_TOOL || Interface.activeTool==Interface.SELECT_TOOL) {
+        if ((Interface.activeTool==Interface.NOEUD_TOOL || Interface.activeTool==Interface.SELECT_TOOL)&& Interface.mode==Interface.EDITION_MODE)  {
             int x = event.getX();
             int y = event.getY();
             if (currentCircleIndex >= 0) {
@@ -684,12 +684,12 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                 int pw = Math.abs(selectXstart-selectXend);
                 int ph = Math.abs(selectYstart-selectYend);
                 this.zoneR = new Rectangle(px, py, pw, ph);
-                this.drawZone = true;
+                Draw.drawZone = true;
                 repaint();
             }
         }
         if (Interface.mode==Interface.TRAITEMENT_MODE) {
-            this.drawZone = false;
+            Draw.drawZone = false;
             repaint();
         }
     }  

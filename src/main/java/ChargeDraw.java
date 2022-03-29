@@ -105,8 +105,8 @@ public class ChargeDraw {
         int y1 = Integer.parseInt(tokenizer.nextToken());
         int x2 = Integer.parseInt(tokenizer.nextToken());
         int y2 = Integer.parseInt(tokenizer.nextToken());
-        Ellipse2D.Double from = d.getCirc()[d.getRec(x1,y1)];
-        Ellipse2D.Double to = d.getCirc()[d.getRec(x2,y2)];
+        Ellipse2D.Double from = d.getCirc()[d.findEllipse(x1,y1)];
+        Ellipse2D.Double to = d.getCirc()[d.findEllipse(x2,y2)];
         int p = Integer.parseInt(tokenizer.nextToken());
         int rgb = Integer.parseInt(tokenizer.nextToken());
         Color c = new Color(rgb);
