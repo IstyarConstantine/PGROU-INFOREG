@@ -3,7 +3,7 @@ Classe abstraite Graphe définissant la structure
 générale d'un graphe
 Auteur : Béryl CASSEL
 Date de création : 27/01/2022
-Date de dernière modification : 18/03/2022
+Date de dernière modification : 29/03/2022
 =============================================*/
 
 import java.io.BufferedWriter;
