@@ -8,14 +8,6 @@ Date de dernière modification : 08/03/2022
 
 public class GOriente extends Graphe {
 
-    /**
-     * Constructeur d'un graphe orienté 
-     * (identique au constructeur d'un graphe non orienté)
-     */
-    public GOriente(){
-        super();
-    }
-
     public GOriente(Draw d){
         super(d);
     }

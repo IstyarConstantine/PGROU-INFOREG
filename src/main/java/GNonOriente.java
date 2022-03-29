@@ -8,14 +8,6 @@ Date de dernière modification : 08/03/2022
 
 public class GNonOriente extends Graphe {
 
-    /**
-     * Constructeur d'un graphe non orienté 
-     * (identique au constructeur d'un graphe orienté)
-     */
-    public GNonOriente(){
-        super();
-    }
-
     public GNonOriente(Draw d){
         super(d);
     }

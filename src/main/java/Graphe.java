@@ -27,21 +27,14 @@ public abstract class Graphe {
 
     protected ArrayList<Arc> lstArcs;
 
-    /**
-     * Constructeur d'un graphe
-     */
-    public Graphe(){
-        this.adj = new int[Graphe.nbmax][Graphe.nbmax];
-        this.nbsommets = 0;
-        this.lstArcs = new ArrayList<Arc>();
-    }
-
     public Graphe(Draw d){
-        this.nbsommets = 0;
-        this.adj = new int[Graphe.nbmax][Graphe.nbmax];
+        this.nbsommets = d.getNumOfCircles();
+        this.adj = new int[nbsommets][nbsommets];
         this.lstArcs = new ArrayList<Arc>();
-        for (int i=0;i<d.getNumOfCircles();i++){
-            addSommet(d.getCircLbl()[i],i);
+        for (int i=0;i<nbsommets;i++){
+            for (int j=0;j<nbsommets;j++){
+                this.adj[i][j] = 0;
+            }
         }
         ArrayList<MyLine> lines = d.getLines();
         for (int i=0;i<d.getNumOfLines();i++){
@@ -132,26 +125,6 @@ public abstract class Graphe {
         }
         return aux;
     }
-
-    /**
-     * Méthode permettant d'ajouter un sommet si cela est encore possible
-     * Modifie aussi la version précédente du graphe 
-     * pour pouvoir revenir en arrière
-     */
-    public void addSommet(String n,int ind){
-        if (this.nbsommets < Graphe.nbmax){
-            /*Ajout du sommet en ajoutant des zéros à adj*/
-            for (int i=0;i<=this.nbsommets;i++){
-                this.adj[i][this.nbsommets] = 0;
-                this.adj[this.nbsommets][i] = 0;
-            }
-            ++this.nbsommets;
-        } else {
-            System.out.println("Impossible d'ajouter un sommet supplémentaire");
-        }
-    }
-
-
 
     /**
      * Test si un Arc est bien présent dans le graphe
