@@ -12,14 +12,13 @@ import javax.swing.JOptionPane;
 
 
 public class KruskalMST implements Connexe,Traitement {
-
-    
-    private Arc arbre[];
     
 
     public void kruskalMST(Draw d){
+
+        Arc[] arbre;
         GNonOriente G = (GNonOriente) d.getG();
-        this.arbre = new Arc[G.nbsommets];
+        arbre = new Arc[G.nbsommets];
         if (connexe(G)){
             // Tnis will store the resultant MST
             //Edge result[] = new Edge[V];
@@ -29,7 +28,7 @@ public class KruskalMST implements Connexe,Traitement {
 
             // An index variable, used for sorted edges
             for (int i = 0; i < G.nbsommets; i++) {
-                this.arbre[i] = new Arc(-1,-1,Integer.MAX_VALUE,0);
+                arbre[i] = new Arc(-1,-1,Integer.MAX_VALUE,-1);
             }
             // Step 1:  Sort all the edges in non-decreasing
             // order of their weight.  If we are not allowed to
@@ -67,15 +66,18 @@ public class KruskalMST implements Connexe,Traitement {
                 // include it in result and increment the index
                 // of result for next edge
                 if (x != y) {
-                    this.arbre[e++] = next_edge;
+                    arbre[e++] = next_edge;
                     union(subsets, x, y);
                 }
                 // Else discard the next_edge
             }
             int p = 0;
-            for (int j = 1;j<this.arbre.length;j++){
-                d.getLines().get(this.arbre[j].getLine()).setC(Color.RED);
-                p += d.getLines().get(this.arbre[j].getLine()).getPoids();
+            System.out.println(arbre.length);
+            for (int j = 0;j<arbre.length;j++){
+                if (arbre[j].getLine()>=0){
+                    d.getLines().get(arbre[j].getLine()).setC(Color.RED);
+                    p += d.getLines().get(arbre[j].getLine()).getPoids();
+                }
             }
             JOptionPane.showMessageDialog(null, "L'arbre couvrant minimal du graphe a un poids de " + p + ".", "Kruskal MST", JOptionPane.INFORMATION_MESSAGE);
         } else {

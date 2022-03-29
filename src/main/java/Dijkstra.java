@@ -11,17 +11,7 @@ import java.awt.Color;
 import javax.swing.JOptionPane;
 
 public class Dijkstra implements Traitement{
-    
-    /**
-     * Liste des prédecesseurs
-     */
-    private int predecesseur[];
-    
-    /**
-     * Liste des distances(poids)
-     */
-    private int dist[];
- 
+
     /**
      * Méthode appliquant l'algorithme de Dijkstra sur le graphe
      * orienté représenté par le Draw d afin de déterminer (si
@@ -33,12 +23,15 @@ public class Dijkstra implements Traitement{
      */
     public void dijkstra(Draw d, int src, int dest){
 
+        int[] dist;
+        int[] predecesseur;
+
         GOriente g = (GOriente) d.getG();
-        this.dist = new int[g.getNbsommets()]; 
+        dist = new int[g.getNbsommets()]; 
         // The output array. dist[i] will hold
         // the shortest distance from src to i
         
-        this.predecesseur = new int[g.getNbsommets()];
+        predecesseur = new int[g.getNbsommets()];
 
         // vu[i] will true if vertex i is included in shortest
         // path tree or shortest distance from src to i is finalized
@@ -46,21 +39,21 @@ public class Dijkstra implements Traitement{
 
         // Initialize all distances as INFINITE and stpSet[] as false
         for (int i = 0; i < g.getNbsommets(); i++) {
-            this.dist[i] = Integer.MAX_VALUE;
+            dist[i] = Integer.MAX_VALUE;
             vu[i] = false;
         }
 
         // Distance of source vertex from itself is always 0
-        this.dist[src] = 0;
+        dist[src] = 0;
         // Source has no predecesseur
-        this.predecesseur[src] = -1;
+        predecesseur[src] = -1;
 
         // Find shortest path for all vertices
         for (int count = 0; count < g.getNbsommets() - 1; count++) {
             // Pick the minimum distance vertex from the set of vertices
             // not yet processed. u is always equal to src in first
             // iteration.
-            int u = findMin(this.dist, vu, g.getNbsommets());
+            int u = findMin(dist, vu, g.getNbsommets());
 
             // Mark the picked vertex as processed
             vu[u] = true;
@@ -72,9 +65,9 @@ public class Dijkstra implements Traitement{
                 // Update dist[v] only if is not in sptSet, there is an
                 // edge from u to v, and total weight of path from src to
                 // v through u is smaller than current value of dist[v]
-                if (!vu[v] && g.getAdj()[u][v] != 0 && this.dist[u] != Integer.MAX_VALUE && this.dist[u] + g.getAdj()[u][v] < this.dist[v]){
-                    this.dist[v] = this.dist[u] + g.getAdj()[u][v];
-                    this.predecesseur[v]= u;
+                if (!vu[v] && g.getAdj()[u][v] != 0 && dist[u] != Integer.MAX_VALUE && dist[u] + g.getAdj()[u][v] < dist[v]){
+                    dist[v] = dist[u] + g.getAdj()[u][v];
+                    predecesseur[v]= u;
                 }
         }
         int s = dest;
