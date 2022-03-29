@@ -42,7 +42,8 @@ public abstract class Graphe {
             int p = l.getPoids();
             int src = d.findEllipse(l.getFromPoint().x,l.getFromPoint().y);
             int dest = d.findEllipse(l.getToPoint().x,l.getToPoint().y);
-            addArc(src, dest, p, i);
+            Arc a = new Arc(src,dest,p,i);
+            addArc(a);
         }
     }
 
@@ -142,18 +143,6 @@ public abstract class Graphe {
      * @param a l'Arc à ajouter
      */
     public abstract void addArc(Arc a);
-    
-    /**
-     * Méthode permettant d'ajouter un arc en donnant 
-     * directement ses composantes en paramètre
-     * @param s = source de l'arc à ajouter
-     * @param d = destination de l'arc à ajouter
-     * @param p = poids de l'arc à ajouter
-     */
-    public void addArc(int s, int d, int p, int ind){
-        Arc a = new Arc(s,d,p,ind);
-        this.addArc(a);
-    }
 
     public abstract int findArc(int src, int dest);
 
