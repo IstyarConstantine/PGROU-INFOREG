@@ -6,9 +6,6 @@ Date de création : 27/01/2022
 Date de dernière modification : 29/03/2022
 =============================================*/
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public abstract class Graphe {
@@ -183,29 +180,6 @@ public abstract class Graphe {
     public void addArc(int s, int d, int p, int ind){
         Arc a = new Arc(s,d,p,ind);
         this.addArc(a);
-    }
-
-    public void sauvGraph(String sauv){
-        try {
-            BufferedWriter fichier = new BufferedWriter(new FileWriter(sauv));
-            fichier.write(this.getClass().getSimpleName());
-            fichier.newLine();
-            String ligne = this.nbsommets + "";
-            fichier.write(ligne);
-            fichier.newLine();
-            for (int i=0;i<this.nbsommets;i++){
-                ligne = "";
-                for (int j=0;j<this.nbsommets;j++){
-                    ligne += this.adj[i][j] + " ";
-                }
-                fichier.write(ligne);
-                fichier.newLine();
-            }
-            fichier.flush();
-            fichier.close();
-        } catch (IOException e) {
-            System.out.println("Erreur");
-        }
     }
 
     public abstract int findArc(int src, int dest);
