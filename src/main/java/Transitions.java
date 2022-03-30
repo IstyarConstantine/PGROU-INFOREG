@@ -4,7 +4,7 @@ les modifications et de les rétablir à l'aide
 des boutons
 Auteur : Isaias VENEGAS
 Date de création : 24/03/2022
-Date de dernière modification : 26/03/2022
+Date de dernière modification : 30/03/2022
 =============================================*/
 import java.awt.geom.Ellipse2D;
 import java.util.Collection;
@@ -107,17 +107,25 @@ public class Transitions{
         this.clearNextStates();
     }
     
+    public void reCreateLog(String action, Ellipse2D.Double circ, double x, double y, double x2, double y2) {
+        this.addPreviousState(new Enregistrement(action,circ,x,y,x2,y2));
+    }
+    
     public void createLog(String action, MyLine line, Ellipse2D.Double fromClou, Ellipse2D.Double toClou) {
         this.addPreviousState(new Enregistrement(action,line,fromClou,toClou));
         this.clearNextStates();
     }
 
     public Enregistrement getPreviousState(){
-        return previousStates.get(previousStates.size()-1);
+        Enregistrement pS = previousStates.get(previousStates.size()-1);
+        previousStates.remove(previousStates.size()-1);
+        return pS;
     }
 
     public Enregistrement getNextState(){
-        return nextStates.get(nextStates.size()-1);
+        Enregistrement pN = nextStates.get(nextStates.size()-1);
+        nextStates.remove(nextStates.size()-1);
+        return pN;
     }
 
     public Collection<Enregistrement> getPreviousStates(){

@@ -307,6 +307,7 @@ public abstract class Interface{
                 if(pileZ.isEmpty()){
                     return;
                 }
+                Ellipse2D.Double[] circles = d.getCirc();
                 Enregistrement lastReg = piles.getPreviousState();
                 // Pour chaque action, on effectue l'action inverse
                 // Ensuite, on déplace l'action sur l'autre pile
@@ -315,9 +316,41 @@ public abstract class Interface{
                         d.remove(d.find(lastReg.noeud));
                         break;
                     case "moveCircle":
-                        lastReg.noeud.x = lastReg.x;
-                        lastReg.noeud.y = lastReg.y;
+                        // On omettra les registres de mouvements intermédiaires
+                        Enregistrement previousReg = lastReg;
+                        Enregistrement temp = piles.getPreviousState();
+                        // Pour cela, comparons que l'enregistrement précédent 
+                        // a comme position de fin la position de début de 
+                        // l'enregistrement actuel.
+                        if(temp != null){
+                            while(
+                                    temp.action.equals("moveCircle") && 
+                                    Double.compare(temp.x2, previousReg.x) == 0 && 
+                                    Double.compare(temp.y2, previousReg.y) == 0)
+                            {
+                                // Si c'est le cas, nous stockons cet enregistrement intermédiaire 
+                                // jusqu'à ce que l'enregistrement précédent soit 
+                                // une action ou un élément différent.
+                                previousReg = temp;
+                                temp = piles.getPreviousState();
+                                if(temp==null){break;}
+                            }
+                        }
+                        // On ajoute l'enregistrement à la liste 
+                        // comme il a été retiré dans le cycle précédent.
+                        if(temp != null)
+                        {
+                            piles.addPreviousState(temp);
+                        }
+                        Ellipse2D.Double noeud = circles[d.find(lastReg.noeud)];
+                        noeud.x = previousReg.x;
+                        noeud.y = previousReg.y;
                         d.repaint();
+                        // On crée l'enregistrement équivalent qui sera pris par la pile Ctrl+Y. 
+                        // Il ne sera pas nécessaire de répéter cette procédure de nettoyage.
+                        piles.reCreateLog("moveCircle", noeud, previousReg.x, previousReg.y, lastReg.x2, lastReg.y2);
+                        // On le prend pour qu'il soit finalement ajouté à la pile Ctrl+Y
+                        lastReg = piles.getPreviousState();
                         break;
                     case "deleteCircle":
                         d.add(lastReg.x, lastReg.y);
@@ -333,7 +366,6 @@ public abstract class Interface{
                         break;
                     case "deleteLine":
                         MyLine l = lastReg.arc;
-                        Ellipse2D.Double[] circles = d.getCirc();
                         // Mettre à jour les nœuds source et destination
                         Ellipse2D.Double pFrom = circles[d.find(lastReg.noeud)];
                         Ellipse2D.Double pTo = circles[d.find(lastReg.noeud2)];
@@ -352,7 +384,6 @@ public abstract class Interface{
                         break;
                 }
                 piles.addNextState(lastReg);
-                pileZ.remove(lastReg);
             }
         });
         forward = new JButton(iconForward);
@@ -362,6 +393,7 @@ public abstract class Interface{
                 if(pileY.isEmpty()){
                     return;
                 }
+                Ellipse2D.Double[] circles = d.getCirc();
                 Enregistrement nextReg = piles.getNextState();
                 // Pour chaque action, on l'exécute
                 // Ensuite, on déplace l'action sur l'autre pile
@@ -370,8 +402,9 @@ public abstract class Interface{
                         d.add(nextReg.x, nextReg.y);
                         break;
                     case "moveCircle":
-                        nextReg.noeud.x = nextReg.x2;
-                        nextReg.noeud.y = nextReg.y2;
+                        Ellipse2D.Double noeud = circles[d.find(nextReg.noeud)];
+                        noeud.x = nextReg.x2;
+                        noeud.y = nextReg.y2;
                         d.repaint();
                         break;
                     case "deleteCircle":
@@ -379,7 +412,6 @@ public abstract class Interface{
                         break;
                     case "addLine":
                         MyLine l = nextReg.arc;
-                        Ellipse2D.Double[] circles = d.getCirc();
                         // Mettre à jour les nœuds source et destination
                         Ellipse2D.Double pFrom = circles[d.find(nextReg.noeud)];
                         Ellipse2D.Double pTo = circles[d.find(nextReg.noeud2)];
@@ -408,7 +440,6 @@ public abstract class Interface{
                         break;
                 }
                 piles.addPreviousState(nextReg);
-                pileY.remove(nextReg);
             }
         });
         //placer les back/forward à droite 
