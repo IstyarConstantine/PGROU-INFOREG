@@ -669,6 +669,9 @@ public class Draw extends JPanel implements MouseMotionListener, FonctionsDessin
                     //Ellipse2D.Double prevClou = new Ellipse2D.Double(line.getClou().x,line.getClou().y,MyLine.RCLOU,MyLine.RCLOU);
                     //transitions.createLog("moveLine",line,prevClou,newClou);
                     //
+                    zoneR = new Rectangle(Integer.MIN_VALUE,Integer.MIN_VALUE,0,0); //permet d'éviter qu'un ensemble de points soient toujours sélectionner
+                                                                                    //après les avoir déselectionner en cliquant a cote
+
                     line.setClou(newClou);
                     repaint();
                 }
